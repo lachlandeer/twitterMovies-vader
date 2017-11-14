@@ -1,10 +1,2 @@
-.bash_logout
-.bashrc
-.ipynb_checkpoints/*
-.ipython/*
-.jupyter/*
-.profile
-.local
-.cache/*
-out/*
-
+out/
+sandbox/
