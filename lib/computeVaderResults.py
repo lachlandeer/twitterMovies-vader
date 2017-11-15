@@ -2,7 +2,16 @@
 Some header that has no meaningful information
 """
 
-## Importing Data
+# --- Import Functions from other Libraries ---#
+
+from pyspark.sql.functions import col, udf, avg, lit
+from pyspark.sql.functions import mean, stddev, min, max, count
+# sentiment analysis
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+# classifying vader scores into bins
+from pyspark.ml.feature import Bucketizer
+
+# --- Functions to Import Data --- #
 
 def loadTwitterData(filePath):
     """
@@ -75,3 +84,5 @@ def importTwitterData(filePath):
     dataSet = loadTwitterData(filePath)
     smallData = selectRelevantColumns(dataSet)
     return smallData
+
+# --- Text Classification with VADER --- #
