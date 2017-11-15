@@ -202,7 +202,8 @@ def uniqueMovies(dataset, movieKey):
                     .like('%,%'))
                 .distinct().collect()
     # strip the markup to return the name only
-    moviesUnique = [str(iMovie.movieName[1:-1]) for iMovie in movies]
+    moviesUnique = [str(iMovie.movieName[1:-1])
+                        for iMovie in movies]
     return moviesUnique
 
 ## --- Functions to Analyse data from an Individual Movie --- ##
