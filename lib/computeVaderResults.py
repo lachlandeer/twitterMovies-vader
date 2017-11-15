@@ -110,29 +110,65 @@ def getCompoundScore(text):
 ## convert getCompoundScore to UDF
 getCompoundUDF = udf(getCompoundScore)
 
-def returnCompoundScore(dataset, textColumn = 'body', 
+def returnCompoundScore(dataset, textColumn = 'body',
         outputColumn = 'vaderScore'):
     """
-    Return the VADER compound score for each tweet as a column attached to the data
+    Return the VADER compound score for each tweet as a
+    column attached to the data
+
+    Inputs:
+        - dataset: a spark DataFrame
+        - textColumn: the column where the Tweet is stored
+            - default: 'body'
+        - outputColumn: the column to put the output into
+            - default: 'vaderScore'
+    Other Functions Called:
+        - getCompoundUDF()
+    Outputs:
+        - sentiment: a spark DataFrame with each tweet's
+            VADER sentiment score attached
+    Example Usage:
+        sentiment_data = returnCompoundScore(my_data,
+                                textColumn = 'tweet_text')
     """
     print('Computing VADER Scores for each tweet')
-    sentiment = dataset.withColumn(outputColumn, getCompoundUDF(col(textColumn)).cast('Double'))
-
+    sentiment = dataset.withColumn(outputColumn,
+                    getCompoundUDF(col(textColumn))\
+                    .cast('Double'))
     return sentiment
 
-def vaderClassify(dataset, textColumn, thresholds = [-1.0, -0.5, 0.5, 1.0]):
+def vaderClassify(dataset, vScore = 'vaderScore',
+                    outCol = 'vaderClassifier'
+                    thresholds = [-1.0, -0.5, 0.5, 1.0]):
+    """
+    Returns whether a Tweet is classified as positive,
+    negative or neutral based on VADER Sentiment Scores and
+    threshold values for the cutoffs
 
+    Inputs:
+        - dataset: a Spark dataFrame with Sentiment Scores
+        - vScore: the column where VADER sentiment scores are
+        - outCol: column to write the classification out
+        - thresholds: where to split the data into categories
+    Other Functions Called:
+        - NULL
+    Outputs:
+        - bucketedData: a spark DataFrame with the
+            VADER classifcation added as a new column
 
-#     # return vader score from text as column 'vaderScore'
-#     outCol  = 'vaderScore'
-#     sentimentData = returnCompoundScore(dataset, textColumn, outCol)
-
-    print ('Classifying all tweets in to buckets using the cutoffs', thresholds[1], 'and', thresholds [2])
-
-    # classify using thresholds, returns a Classifier
-    bucketizer = Bucketizer(splits = thresholds, inputCol = "vaderScore", outputCol = "vaderClassifier")
-
+    Example Usage:
+        my_thresholds = [-1.0, -0.33, 0.33, 1.0]
+        classifiedData = vaderClassify(my_data, vScore = 'vaderScore',
+                            outCol = 'tweetClassification',
+                            thresholds = my_thresholds)
+    """
+    print ('Classifying all tweets in to buckets using the cutoffs',
+                thresholds[1], 'and', thresholds [2])
+    # pass thresholds and input and output column to
+    # define a classification function
+    bucketizer = Bucketizer(splits = thresholds,
+                        inputCol = vScore, outputCol = outCol)
     print("Bucketizer output with %d buckets" % (len(bucketizer.getSplits())-1))
-
+    # classify the data
     bucketedData = bucketizer.transform(dataset)
     return bucketedData
