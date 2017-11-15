@@ -247,8 +247,7 @@ def vaderCountsByClassification(dataset, identifier):
           per day per classification bucket
 
     Example Usage:
-
-    vaderCountsByClassification(wolverine_tweets,
+        vaderCountsByClassification(wolverine_tweets,
                                 'wolverine')
     """
     vaderCounts = dataset.groupby(dataset.date,
@@ -302,3 +301,44 @@ def computeVaderCounts(dataset, movieList):
     pandasVaderCounts = allVaderCounts.toPandas()
     print('complete!')
     return indivCounts
+
+def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
+    """
+    Compute Daily Sentiment Statistics for a movie
+
+    Inputs:
+        - dataset: a spark DataFrame with sentiment score attached
+        - identifier: the movie we want to compute stats for
+        - vaderCol: the column containing vader sentiment scores
+    Other functions Called:
+        - NULL
+    Outputs:
+        - dailyStats: summary stats per movie-day
+    Example Usage:
+        vaderStats(wolverine_tweets,
+                    'wolverine')
+    """
+    # aggregate functions
+    aggStats = [mean, stddev, min, max, count]
+    aggVariable = [vaderCol]
+    exprs = [iStat(col(iVariable)) for iStat in aggStats \
+                for iVariable in aggVariable]
+    # summary stats
+    dailyStats = dataset.groupby('date').agg(*exprs)
+    # rename cols
+    autoNames  = dailyStats.schema.names
+    newNames   = ["date", "avgScore", "stdDev", "minScore",
+                    "maxScore", "totalTweets"]
+    # rename all columns to be meaningful
+    dailyStats = reduce(lambda dailyStats, idx: \
+                    dailyStats.withColumnRenamed(autoNames[idx],
+                        newNames[idx]),
+                        xrange(len(autoNames)),
+                        dailyStats
+                        )
+    # write movie name to data
+    dailyStats = dailyStats.withColumn('movieName',
+                    lit(identifier))
+    dailyStats = dailyStats.orderBy(['date'],
+                    ascending=False)
+    return dailyStats
