@@ -319,10 +319,10 @@ def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
                     'wolverine')
     """
     # aggregate functions
-    aggStats = [mean, stddev, min, max, count]
+    aggStats    = [mean, stddev, min, max, count]
     aggVariable = [vaderCol]
-    exprs = [iStat(col(iVariable)) for iStat in aggStats \
-                for iVariable in aggVariable]
+    exprs       = [iStat(col(iVariable)) for iStat in aggStats \
+                    for iVariable in aggVariable]
     # summary stats
     dailyStats = dataset.groupby('date').agg(*exprs)
     # rename cols
