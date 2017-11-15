@@ -17,7 +17,6 @@ def loadTwitterData(filePath):
         data_path = 'alluxio://master001:19998/twitter-chicago/DeerSet9/'
         my_data   = loadTwitterData(data_path)
     """
-
     df = spark.read.json(filePath + '*.gz')
     return df
 
@@ -58,3 +57,21 @@ def selectRelevantColumns(df):
     return df2
 
 def importTwitterData(filePath):
+    """
+    Takes a filePath and returns a cleaned up version of
+        the twitter data to perform sentiment analysis.
+
+    Inputs:
+        - filePath: a valid filePath
+    Other Functions Called:
+        - loadTwitterData()
+        - selectRelevantColumns(df)
+    Outputs:
+        - smallData: a cleaned up spark DataFrame
+    Example Usage:
+        data_path  = 'alluxio://master001:19998/twitter-chicago/DeerSet9/'
+        my_data    = importTwitterData(dataPath)
+    """
+    dataSet = loadTwitterData(filePath)
+    smallData = selectRelevantColumns(dataSet)
+    return smallData
