@@ -204,3 +204,100 @@ def uniqueMovies(dataset, movieKey):
     # strip the markup to return the name only
     moviesUnique = [str(iMovie.movieName[1:-1]) for iMovie in movies]
     return moviesUnique
+
+## --- Functions to Analyse data from an Individual Movie --- ##
+
+def singleMovieTweets(dataset, identifier):
+    """
+    Filter out the tweets for an individual movie identified
+    in the twitter data
+
+    Inputs:
+        - dataset: a spark dataFrame
+        - identifier: a string to match to the movie name
+    Other Functions Called:
+        - NULL
+    Outputs:
+        singleMovie: a spark dataFrame of all tweets about
+            a single movie
+    Example Usage:
+        wolverine_tweets = singleMovieTweets(my_data,
+                            'wolverine')
+    """
+    singleMovie = dataset.filter(dataset.movieName \
+                                    .like('%{0}%' \
+                                    .format(identifier)
+                                    )
+                                )
+    return singleMovie
+
+def vaderCountsByClassification(dataset, identifier):
+    """
+    Calcuates the number of positive, negative and neutral
+    tweets for an individual movie per day
+
+    Inputs:
+        - dataset: a spark DataFrame
+        - identifier: the name of a movie
+    Other Functions Called:
+        - NULL
+    Outputs:
+        - vaderCounts: spark DataFrame of number of tweets
+          per day per classification bucket
+
+    Example Usage:
+
+    vaderCountsByClassification(wolverine_tweets,
+                                'wolverine')
+    """
+    vaderCounts = dataset.groupby(dataset.date,
+                        dataset.vaderClassifier).count()
+    vaderCounts = vaderCounts.withColumnRenamed("count",
+                        "nTweets")
+    # write the movie name into the rows
+    vaderCounts = vaderCounts.withColumn('movieName',
+                        lit(identifier))
+    vaderCounts = vaderCounts.orderBy(['date',
+                                        'vaderClassifier']
+                        , ascending=False)
+    return vaderCounts
+
+def computeVaderCounts(dataset, movieList):
+    """
+    Calcuates the number of positive, negative and neutral
+    tweets for an individual movie per day, from a list of
+    movies.
+
+    Inputs:
+        - dataset: a spark DataFrame with tweets
+            classified into buckets
+        - movieList: a list of movies to compute stats for
+    Other Functions Called:
+        - singleMovieTweets()
+        - vaderCountsByClassification()
+    Outputs:
+        - indivCounts: a spark DataFrame with each
+            movie-days number of tweets per classification
+    Example Usage:
+        computeVaderCounts(classified_data, list_of_movies)
+    """
+    # for all unique movies
+    for idx, movieName in enumerate(movieList):
+        # filter relevant tweets
+        indivTweets = singleMovieTweets(dataset, movieList[idx])
+        # count tweets by type
+        indivCounts = vaderCountsByClassification(indivTweets, movieList[idx])
+        # write results to a dataset, creating it if necessary
+        if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = indivCounts
+        if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = allVaderCounts.union(indivCounts)
+
+        print(movieName,
+                'passed Lazy Evaluation at the tweet count stage')
+    # save data to a pandas data frame
+    print ('Converting Count Data to Pandas DF,
+                this may take a while...')
+    pandasVaderCounts = allVaderCounts.toPandas()
+    print('complete!')
+    return indivCounts
