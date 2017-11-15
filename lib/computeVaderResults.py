@@ -6,9 +6,7 @@ Some header that has no meaningful information
 
 from pyspark.sql.functions import col, udf, avg, lit
 from pyspark.sql.functions import mean, stddev, min, max, count
-# sentiment analysis
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-# classifying vader scores into bins
 from pyspark.ml.feature import Bucketizer
 
 # --- Functions to Import Data --- #
@@ -86,3 +84,55 @@ def importTwitterData(filePath):
     return smallData
 
 # --- Text Classification with VADER --- #
+
+analyzer = SentimentIntensityAnalyzer()
+
+def getCompoundScore(text):
+    """
+    Compute the VADER Sentiment Score of an individual Tweet.
+    To be wrapped in a udf to send to SparkSQL data
+
+    Inputs:
+        - text = a Spark column of tweets
+    Other Functions Called:
+        -  vaderSentiment polarity analyzer: imported as analyzer
+    Outputs:
+        - compoundScore = sum of the valence scores of each
+        words in the lexicon, and normalized result to be between
+        -1 (most extreme negative) and +1 (most extreme positive)
+    Example Usage:
+        compound_udf = udf(getCompoundScore)
+    """
+
+    compoundScore = analyzer.polarity_scores(text).get('compound')
+    return compoundScore
+
+## convert getCompoundScore to UDF
+getCompoundUDF = udf(getCompoundScore)
+
+def returnCompoundScore(dataset, textColumn = 'body', 
+        outputColumn = 'vaderScore'):
+    """
+    Return the VADER compound score for each tweet as a column attached to the data
+    """
+    print('Computing VADER Scores for each tweet')
+    sentiment = dataset.withColumn(outputColumn, getCompoundUDF(col(textColumn)).cast('Double'))
+
+    return sentiment
+
+def vaderClassify(dataset, textColumn, thresholds = [-1.0, -0.5, 0.5, 1.0]):
+
+
+#     # return vader score from text as column 'vaderScore'
+#     outCol  = 'vaderScore'
+#     sentimentData = returnCompoundScore(dataset, textColumn, outCol)
+
+    print ('Classifying all tweets in to buckets using the cutoffs', thresholds[1], 'and', thresholds [2])
+
+    # classify using thresholds, returns a Classifier
+    bucketizer = Bucketizer(splits = thresholds, inputCol = "vaderScore", outputCol = "vaderClassifier")
+
+    print("Bucketizer output with %d buckets" % (len(bucketizer.getSplits())-1))
+
+    bucketedData = bucketizer.transform(dataset)
+    return bucketedData
