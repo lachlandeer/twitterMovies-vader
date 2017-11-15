@@ -172,3 +172,35 @@ def vaderClassify(dataset, vScore = 'vaderScore',
     # classify the data
     bucketedData = bucketizer.transform(dataset)
     return bucketedData
+
+## --- Find What Movies are contained in twitter data --- ##
+## Works for data inside 'twitter-chicago' directories
+
+def uniqueMovies(dataset, movieKey):
+    """
+    Finds the unique movies mentioned in the tweets within dataset
+
+    In the searches run at UChicago we attached a key to
+    identify which movie each search we ran is about. This
+    function finds the unique values of that variable in
+    a dataset.
+
+    Inputs:
+        - dataset: a spark DataFrame of movie tweets
+            loaded from a UC Booth folder
+        - movieKey: the column that identifies what search
+            a tweet was returned
+    Other Functions Called:
+        - NULL
+    Outputs:
+        - moviesUnique: list of unique movies in the  data
+    Example Usage:
+        moviesUnique = uniqueMovies(my_data, 'movie_name')
+    """
+    movies = dataset.select(movieKey)\
+                .where(~col(movieKey)\
+                    .like('%,%'))
+                .distinct().collect()
+    # strip the markup to return the name only
+    moviesUnique = [str(iMovie.movieName[1:-1]) for iMovie in movies]
+    return moviesUnique
