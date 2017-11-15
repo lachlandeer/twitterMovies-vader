@@ -1,2 +1,4 @@
 out/
 sandbox/
+__pycache__
+.snakemake
