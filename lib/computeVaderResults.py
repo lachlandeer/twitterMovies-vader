@@ -373,41 +373,31 @@ def vaderCounts2csv(dataset, inPath, outPath):
 
 def parseMovieData(filePath, textCol = 'body',
                     thresholds = [-1.0, -0.5, 0.5, 1.0]):
+    """
 
-    # TODO: check if zero length files, and clean them out before loading the data
-
-    print('I am loading the data from ', filePath)
-    # load the data
+    """
+    # Load Data
+    print('Loading the data from ', filePath)
     df = loadTwitterData(filePath)
-    #print 'data loaded ...'
 
-    ## --- Compute Sentiment and Classify --- ##
-
-    # sentiment data
+    # Compute Sentiment and Classify
     sentimentData = returnCompoundScore(df, textCol)
-    # compute Classification for each tweet
     classifiedData = vaderClassify(sentimentData, textCol, thresholds)
 
     # identify unique movies
     moviesUnique = uniqueMovies(df, 'movieName')
-
     print('I found ', len(moviesUnique), ' movies in ', filePath)
     print('The movies are:')
     print('\n'.join(str(iMovie) for iMovie in moviesUnique))
 
-    ## --- Tweet Counts by Movie - day --- #
-
-    # compute daily counts for each classification for each movie
-    vaderCounts = computeVaderCounts(classifiedData, moviesUnique)
-
-    #save vaderCounts to a csv file
+    # Tweet Counts by Movie - day
     outCounts  = '~/sandbox/out/vaderCounts/'
+    vaderCounts = computeVaderCounts(classifiedData, moviesUnique)
     vaderCounts2csv(vaderCounts, filePath, outCounts)
 
     ## --- Summary Stats by Movie-day --- ##
     # compute daily counts for each classification for each movie
-    vaderStats = computeVaderStats(sentimentData, moviesUnique)
-
+    #vaderStats = computeVaderStats(sentimentData, moviesUnique)
     # save vaderCounts to a csv file
     #outStats  = '~/sandbox/out/vaderStats/'
     #vaderStats2csv(vaderStats, filePath, outStats)
