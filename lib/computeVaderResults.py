@@ -300,7 +300,7 @@ def computeVaderCounts(dataset, movieList):
                 this may take a while...')
     pandasVaderCounts = allVaderCounts.toPandas()
     print('complete!')
-    return indivCounts
+    return pandasVaderCounts
 
 def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
     """
