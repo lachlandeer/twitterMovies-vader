@@ -206,7 +206,7 @@ def uniqueMovies(dataset, movieKey):
                         for iMovie in movies]
     return moviesUnique
 
-## --- Functions to Analyse data from an Individual Movie --- ##
+# --- Functions to Analyse data from an Individual Movie --- #
 
 def singleMovieTweets(dataset, identifier):
     """
@@ -342,3 +342,29 @@ def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
     dailyStats = dailyStats.orderBy(['date'],
                     ascending=False)
     return dailyStats
+
+# --- CSV Writers --- #
+
+def vaderCounts2csv(dataset, inPath, outPath):
+    """
+    Write a pandas dataset of VaderCount Data to csv
+
+    Inputs:
+        - dataset: a spark dataset
+    Other Functions Called:
+        - NULL
+    Outputs:
+        - a csv file containing the number of tweets per
+            movie-day-vader classification
+    Example Usage:
+        vaderCounts2csv(vaderCounts, filePath, outCounts)
+    """
+    # make output directory if not created
+    if not os.path.exists(outPath):
+        os.makedirs(outPath)
+    # save to .csv File
+    fileName = os.path.basename(os.path.normpath(inPath)) \
+                + 'Counts.csv'
+    outFile  = outPath + fileName
+    dataset.to_csv(outFile, index=False, encoding='utf-8')
+    print('VADER Counts saved to csv file', outFile)
