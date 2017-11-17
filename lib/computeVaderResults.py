@@ -372,12 +372,47 @@ def vaderCounts2csv(dataset, inPath, outPath):
 # --- Run VADER analysis ---#
 
 def parseMovieData(filePath, textCol = 'body',
-                    thresholds = [-1.0, -0.5, 0.5, 1.0]):
+                    thresholds = [-1.0, -0.5, 0.5, 1.0],
+                    outStats, outCounts):
     """
+    Takes a path to a directory where twitter data is located
+    and then;
+        - Loads it
+        - Compute sentiment scores and bucketized classification
+        - finds list of unique movies
+        - computes counts and summary statistics
+        - writes counts and stats to csv files
 
+    Inputs:
+        - filePath
+        - textCol
+        - thresholds:
+        - outStats
+        - outCounts
+    Other functions Called:
+        - loadTwitterData()
+        - returnCompoundScore()
+        - vaderClassify()
+        - uniqueMovies()
+        - computeMovieStats()
+        - vaderStats2csv()
+        - vaderCounts2csv()
+    Outputs (as csv files written to disk):
+        - outStats+filePath.csv: summary stats per movie-day
+        - outCounts+filePath.csv: count of tweets per
+            classification-movie-day
+    Expected Usage:
+        data_path   = 'alluxio://master001:19998/twitter-chicago/DeerSet9/'
+        out_stats   = 'home/ubuntu/out/stats/'
+        out_counts  = 'home/ubuntu/out/counts/'
+        thresholds  = [-1.0. -0.333, 0.00, 0.333, 1.00]
+        text_col    = 'tweet_text'
+
+        parseMovieData(data_path, text_col, thresholds,
+            out_stats, out_counts)
     """
     # Load Data
-    print('Loading the data from ', filePath, outStats, outCounts)
+    print('Loading the data from ', filePath)
     df = loadTwitterData(filePath)
 
     # Compute Sentiment and Classify
