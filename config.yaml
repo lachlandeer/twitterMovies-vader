@@ -1,0 +1,9 @@
+ROOT:     "."
+src:      "src/"
+lib:      "lib/"
+out:      "out/"
+
+# SubDirectory Structure
+src_main:   "src/main/"
+out_stats:  "out/stats"
+out_counts: "out/counts"
