@@ -1,9 +1,11 @@
-ROOT:     "."
-src:      "src/"
-lib:      "lib/"
-out:      "out/"
+ROOT:       "."
+src:        "src/"
+lib:        "lib/"
+out:        "out/"
+data_mount: "alluxio://master001:19998"
 
 # SubDirectory Structure
 src_main:   "src/main/"
-out_stats:  "out/stats"
-out_counts: "out/counts"
+src_data:   "src/data/"
+out_stats:  "out/stats/"
+out_counts: "out/counts/"
