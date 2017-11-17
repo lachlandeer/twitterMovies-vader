@@ -344,35 +344,44 @@ def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
     return dailyStats
 
 def computeMovieStats(dataset, movieList):
-    
-    for idx, movieTitle in enumerate(movieList): # for all unique movies
+    """
+    Calcuates the number of positive, negative and neutral
+    tweets for an individual movie per day and summary stats
+    from a list of movies.
 
+    Inputs:
+        - dataset: a spark DataFrame with tweets
+            classified into buckets
+        - movieList: a list of movies to compute stats for
+    Other Functions Called:
+        - singleMovieTweets()
+        - vaderStats()
+        - vaderCountsByClassification()
+    Outputs:
+        - indivCounts: a spark DataFrame with each
+            movie-days number of tweets per classification
+    Example Usage:
+        computeMovieStats(classified_data, list_of_movies)
+    """
+    for idx, movieTitle in enumerate(movieList): # for all unique movies
         # get tweets for one movie
         indivTweets = singleMovieTweets(dataset, movieList[idx])
         # tweets Stats per day
         indivStats = vaderStats(indivTweets, movieList[idx])
         # tweet counts by type
         indivCounts = vaderCountsByClassification(indivTweets, movieList[idx])
-
+        # add to data set or create them if they dont exist
+        # first, vader counts
         if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
             allVaderCounts = indivCounts
         if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
             allVaderCounts = allVaderCounts.union(indivCounts)
-
+        # second, the summary stats
         if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
             allVaderStats = indivStats
         if 'allVaderStats' in locals() or 'allVaderStats' in globals():
             allVaderStats = allVaderStats.union(indivStats)
-
-#         print(movieTitle, 'passed Lazy Evaluation at the daily summary stage')
-#         print('Converting daily stats to Pandas DF, this may take a while...')
-#         pandasVaderStats = allVaderStats.toPandas()
-
-#         print ('Converting Count Data to Pandas DF, this may take a while...')
-#         pandasVaderCounts = allVaderCounts.toPandas()
-
-    print('complete!')
-    return allVaderCounts, allVaderStats #pandasVaderCounts, pandasVaderStats #
+    return allVaderCounts, allVaderStats 
 
 # --- CSV Writers --- #
 
