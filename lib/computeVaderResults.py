@@ -377,7 +377,7 @@ def parseMovieData(filePath, textCol = 'body',
 
     """
     # Load Data
-    print('Loading the data from ', filePath)
+    print('Loading the data from ', filePath, outStats, outCounts)
     df = loadTwitterData(filePath)
 
     # Compute Sentiment and Classify
@@ -390,16 +390,18 @@ def parseMovieData(filePath, textCol = 'body',
     print('The movies are:')
     print('\n'.join(str(iMovie) for iMovie in moviesUnique))
 
-    # Tweet Counts by Movie - day
-    outCounts  = '~/sandbox/out/vaderCounts/'
-    vaderCounts = computeVaderCounts(classifiedData, moviesUnique)
-    vaderCounts2csv(vaderCounts, filePath, outCounts)
+    # recover counts and summary stats
+    vaderCounts, vaderStats = computeMovieStats(classifiedData, moviesUnique)
+    # saving via pandas merge
+    # (slow, but writes to local directory which other methods dont)
+    print('Converting daily stats to Pandas DF, this may take a while...')
+    pandasVaderStats = vaderStats.toPandas()
+    vaderStats2csv(pandasVaderStats, filePath, outStats)
+    del pandasVaderStats, vaderStats
 
-    ## --- Summary Stats by Movie-day --- ##
-    # compute daily counts for each classification for each movie
-    #vaderStats = computeVaderStats(sentimentData, moviesUnique)
-    # save vaderCounts to a csv file
-    #outStats  = '~/sandbox/out/vaderStats/'
-    #vaderStats2csv(vaderStats, filePath, outStats)
+    print ('Converting Count Data to Pandas DF, this may take a while...')
+    pandasVaderCounts = vaderCounts.toPandas()
+    vaderCounts2csv(pandasVaderCounts, filePath, outCounts)
+    del pandasVaderCounts, vaderCounts
 
-    return vaderCounts, vaderStats
+    # end of function
