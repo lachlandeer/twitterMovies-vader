@@ -343,6 +343,37 @@ def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
                     ascending=False)
     return dailyStats
 
+def computeMovieStats(dataset, movieList):
+    
+    for idx, movieTitle in enumerate(movieList): # for all unique movies
+
+        # get tweets for one movie
+        indivTweets = singleMovieTweets(dataset, movieList[idx])
+        # tweets Stats per day
+        indivStats = vaderStats(indivTweets, movieList[idx])
+        # tweet counts by type
+        indivCounts = vaderCountsByClassification(indivTweets, movieList[idx])
+
+        if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = indivCounts
+        if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = allVaderCounts.union(indivCounts)
+
+        if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
+            allVaderStats = indivStats
+        if 'allVaderStats' in locals() or 'allVaderStats' in globals():
+            allVaderStats = allVaderStats.union(indivStats)
+
+#         print(movieTitle, 'passed Lazy Evaluation at the daily summary stage')
+#         print('Converting daily stats to Pandas DF, this may take a while...')
+#         pandasVaderStats = allVaderStats.toPandas()
+
+#         print ('Converting Count Data to Pandas DF, this may take a while...')
+#         pandasVaderCounts = allVaderCounts.toPandas()
+
+    print('complete!')
+    return allVaderCounts, allVaderStats #pandasVaderCounts, pandasVaderStats #
+
 # --- CSV Writers --- #
 
 def vaderCounts2csv(dataset, inPath, outPath):
