@@ -1,15 +1,19 @@
 """
 Here is some basic text
 """
+# --- Import Libraries --- #
 
+## Native Python
 import os
 import sys
 from pathlib import Path
+import time
 
+# User written
 sys.path.append(str(Path('.').absolute()))
-#print(sys.path)
-# Import local packages
 import lib.computeVaderResults as cvr
+
+# --- Import CL arguments:
 
 # run some stuff
 my_text = sys.argv[1]
