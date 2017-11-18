@@ -9,7 +9,10 @@ configfile: "config.yaml"
 
 
 # --- Set up Dictionaries --- #
-SOMEDICTIONARY = []
+FOLDERLIST = [iLine.rstrip('\n') for iLine
+                in open(config['src_data'] + 'twitterFolders.txt')]
+
+print(FOLDERLIST)
 
 # --- Rules --- #
 # TBD

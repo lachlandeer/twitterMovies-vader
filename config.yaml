@@ -6,6 +6,6 @@ data_mount: "alluxio://master001:19998"
 
 # SubDirectory Structure
 src_main:   "src/main/"
-src_data:   "src/data/"
+src_data:   "src/in_data/"
 out_stats:  "out/stats/"
 out_counts: "out/counts/"
