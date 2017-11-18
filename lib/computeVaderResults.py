@@ -138,7 +138,7 @@ def returnCompoundScore(dataset, textColumn = 'body',
     return sentiment
 
 def vaderClassify(dataset, vScore = 'vaderScore',
-                    outCol = 'vaderClassifier'
+                    outCol = 'vaderClassifier',
                     thresholds = [-1.0, -0.5, 0.5, 1.0]):
     """
     Returns whether a Tweet is classified as positive,
@@ -197,9 +197,9 @@ def uniqueMovies(dataset, movieKey):
     Example Usage:
         moviesUnique = uniqueMovies(my_data, 'movie_name')
     """
-    movies = dataset.select(movieKey)\
-                .where(~col(movieKey)\
-                    .like('%,%'))
+    movies = dataset.select(movieKey) \
+                .where(~col(movieKey) \
+                    .like('%,%')) \
                 .distinct().collect()
     # strip the markup to return the name only
     moviesUnique = [str(iMovie.movieName[1:-1])
@@ -371,9 +371,8 @@ def vaderCounts2csv(dataset, inPath, outPath):
 
 # --- Run VADER analysis ---#
 
-def parseMovieData(filePath, textCol = 'body',
-                    thresholds = [-1.0, -0.5, 0.5, 1.0],
-                    outStats, outCounts):
+def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
+                    thresholds = [-1.0, -0.5, 0.5, 1.0]):
     """
     Takes a path to a directory where twitter data is located
     and then;
