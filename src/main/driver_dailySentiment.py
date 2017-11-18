@@ -8,16 +8,24 @@ import os
 import sys
 from pathlib import Path
 import time
+import csv
 
 # User written
 sys.path.append(str(Path('.').absolute()))
-import lib.computeVaderResults as cvr
+#import lib.computeVaderResults as cvr
 
 # --- Import CL arguments:
+dataPath    = sys.argv[1]
+analysisSet = sys.argv[2]
+thresholds  = sys.argv[3]
+outCounts   = sys.argv[4]
+outStats    = sys.argv[5]
 
-# run some stuff
-my_text = sys.argv[1]
-print(my_text)
+print(dataPath)
+print(analysisSet)
+print(thresholds)
+print(outCounts)
+print(outStats)
 
-#stuff_to_print(sys.argv[1])
-cvr.stuff_to_print(sys.argv[1])
+file1 = csv.writer(open(outCounts, "wb"))
+file2 = csv.writer(open(outStats, "wb"))
