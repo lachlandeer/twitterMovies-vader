@@ -44,7 +44,9 @@ rule chicagoDaily:
     log: config["out_log"] + str("{iFolder}") + "_" + \
                          "daily.txt"
     shell:
-        "{RUN_PYSPARK} {input.script} --dataPath {params.dataPath} \
+        "{RUN_PYSPARK} \
+            -py-files {input.libary} \
+            {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
             --thresholds {params.thresholds} \
             --outCounts {output.outCounts} \
