@@ -15,7 +15,7 @@ CHICAGODATA = ['DeerAntman']
 THRESHOLDS = "-1.00 -0.333 0.00 0.333 1.00"
 
 # --- Spark Submit Command --- #
-RUN_PYSPARK = spark-submit --master spark://master001:7077
+RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 
 # --- Rules --- #
 ## runChicagoDaily:     run sentiment analysis on Chicago data
