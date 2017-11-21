@@ -9,15 +9,15 @@ configfile: "config.yaml"
 
 
 # --- Set up Dictionaries --- #
-# FOLDERLIST = [ iLine.rstrip('/ \n') for iLine
-#                 in open(config['src_data'] + 'twitterFolders.txt')]
-CHICAGODATA = ['DeerAntman']
+CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
+                in open(config['src_data'] + 'twitterFolders.txt')]
+# CHICAGODATA = ['DeerAntman']
 
-
-print(CHICAGODATA)
 THRESHOLDS = "-1.00 -0.333 0.00 0.333 1.00"
+
 # --- Rules --- #
 ## runChicagoDaily:     run sentiment analysis on Chicago data
+
 rule runChicagoDaily:
     input:
         dataStats = expand(config["out_counts"] + "{iFolder}.csv", \

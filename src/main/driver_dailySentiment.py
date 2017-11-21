@@ -59,14 +59,14 @@ print("outCounts : %r" % args.outCounts)
 print("outStats  : %r" % args.outStats)
 
 
-# rowText = [1,2,3, "hat"]
-#
-# ofile  = open(outCounts, "w")
-# writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-# writer.writerow(rowText)
-# ofile.close()
-#
-# ofile  = open(outStats, "w")
-# writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-# writer.writerow(rowText)
-# ofile.close()
+rowText = [1,2,3, "hat"]
+
+ofile  = open(args.outCounts[0], "w")
+writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+writer.writerow(rowText)
+ofile.close()
+
+ofile  = open(args.outStats[0], "w")
+writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+writer.writerow(rowText)
+ofile.close()
