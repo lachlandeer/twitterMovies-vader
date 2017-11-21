@@ -8,7 +8,7 @@ configfile: "config.yaml"
 
 # --- Set up Dictionaries --- #
 #CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
-                in open(config['src_data'] + 'twitterFolders.txt')]
+#                in open(config['src_data'] + 'twitterFolders.txt')]
 CHICAGODATA = ['DeerAntman']
 
 # --- Thresholds for VADER analysis --- #
