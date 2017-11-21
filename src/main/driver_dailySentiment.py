@@ -76,7 +76,7 @@ startTime = time.time()
 print('Starting Job')
 
 cvr.parseMovieData(filePath, outStats, outCounts, textCol = 'body',
-                    thresholds = vaderThresholds):
+                    thresholds = vaderThresholds)
 
 print('Job Completed!')
 endTime = time.time() - t
