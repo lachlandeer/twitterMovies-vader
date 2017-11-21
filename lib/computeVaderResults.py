@@ -441,7 +441,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
         data_path   = 'alluxio://master001:19998/twitter-chicago/DeerSet9/'
         out_stats   = 'home/ubuntu/out/stats/'
         out_counts  = 'home/ubuntu/out/counts/'
-        thresholds  = [-1.0. -0.333, 0.00, 0.333, 1.00]
+        thresholds  = [-1.0. -0.333, 0.333, 1.00]
         text_col    = 'tweet_text'
 
         parseMovieData(data_path, text_col, thresholds,
