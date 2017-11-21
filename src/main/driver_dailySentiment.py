@@ -11,9 +11,9 @@ import time
 import csv
 import argparse
 
-# User written
+## User written
 sys.path.append(str(Path('.').absolute()))
-#import lib.computeVaderResults as cvr
+import lib.computeVaderResults as cvr
 
 # ---  Define command line options --- #
 # this also generates --help and error handling
