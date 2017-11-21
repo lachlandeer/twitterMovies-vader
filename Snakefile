@@ -12,7 +12,7 @@ configfile: "config.yaml"
 CHICAGODATA = ['DeerSet9']
 
 # --- Thresholds for VADER analysis --- #
-THRESHOLDS = "-1.00 -0.333 0.00 0.333 1.00"
+THRESHOLDS = "-1.00 -0.333 0.333 1.00"
 
 # --- Spark Submit Command --- #
 RUN_PYSPARK = "spark-submit --master spark://master001:7077"
