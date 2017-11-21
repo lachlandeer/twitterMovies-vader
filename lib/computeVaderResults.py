@@ -85,7 +85,7 @@ def selectRelevantColumns(df):
     columnNames = ['body','gnip.matching_rules.tag', \
                     'gnip.matching_rules.value', \
                     'postedTime', 'retweetCount', \
-                    twitter_lang]
+                    'twitter_lang']
 
     # Select relevant columns & filter out english language tweets
     df2 = df.select(*columnNames)
