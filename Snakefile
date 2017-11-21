@@ -45,7 +45,7 @@ rule chicagoDaily:
                          "daily.txt"
     shell:
         "{RUN_PYSPARK} \
-            -py-files {input.libary} \
+            -py-files {input.library} \
             {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
             --thresholds {params.thresholds} \
