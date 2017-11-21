@@ -13,7 +13,7 @@ import argparse
 
 ## User written
 sys.path.append(str(Path('.').absolute()))
-import lib.computeVaderResults as cvr
+import computeVaderResults as cvr
 
 # ---  Define command line options --- #
 # this also generates --help and error handling
