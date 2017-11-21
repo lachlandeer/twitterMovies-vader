@@ -56,7 +56,7 @@ rule zipPyModules:
     input:
         library = config["lib"]
     output:
-        zipDir = config["out_lib"] + "usrLib.zip"
+        zipDir = config["ROOT"] + "usrLib.zip"
     shell:
         "zip -x *.pyc -r {output.zipDir} {input.library}"
 
