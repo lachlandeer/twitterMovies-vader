@@ -2,43 +2,6 @@
 Here is some basic text
 """
 # --- Import Libraries --- #
-import atexit
-import os
-import platform
-
-import py4j
-
-import pyspark
-from pyspark.context import SparkContext
-from pyspark.sql import SparkSession, SQLContext
-from pyspark.storagelevel import StorageLevel
-
-if os.environ.get("SPARK_EXECUTOR_URI"):
-    SparkContext.setSystemProperty("spark.executor.uri", os.environ["SPARK_EXECUTOR_URI"])
-
-SparkContext._ensure_initialized()
-
-try:
-    # Try to access HiveConf, it will raise exception if Hive is not added
-    SparkContext._jvm.org.apache.hadoop.hive.conf.HiveConf()
-    spark = SparkSession.builder\
-        .getOrCreate()
-except py4j.protocol.Py4JError:
-    spark = SparkSession.builder.getOrCreate()
-except TypeError:
-    spark = SparkSession.builder.getOrCreate()
-
-sc = spark.sparkContext
-sql = spark.sql
-atexit.register(lambda: sc.stop())
-
-spark = SparkSession(sc)
-
-# for compatibility
-sqlContext = spark._wrapped
-sqlCtx = sqlContext
-
-
 
 ## Native Python
 import os
