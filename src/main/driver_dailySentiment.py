@@ -15,7 +15,7 @@ import argparse
 sys.path.append(str(Path('.').absolute()))
 #import lib.computeVaderResults as cvr
 
-# defined command line options
+# ---  Define command line options --- #
 # this also generates --help and error handling
 CLI=argparse.ArgumentParser()
 CLI.add_argument(
@@ -49,7 +49,8 @@ CLI.add_argument(
   default = ['./'],
 )
 
-# parse the command line
+# --- Parse the Command Line Options --- #
+
 args = CLI.parse_args()
 # access CLI options
 print("dataPath  : %r" % args.dataPath)
@@ -58,15 +59,21 @@ print("thresholds: %r" % args.thresholds)
 print("outCounts : %r" % args.outCounts)
 print("outStats  : %r" % args.outStats)
 
+dataPath   = args.dataPath[0]
+folderPath = args.folder[0]
+outCounts  = args.outCounts[0]
+outStats   = args.outStats[0]
+
+# --# Run analysis --- #
 
 rowText = [1,2,3, "hat"]
 
-ofile  = open(args.outCounts[0], "w")
+ofile  = open(outCounts, "w")
 writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 writer.writerow(rowText)
 ofile.close()
 
-ofile  = open(args.outStats[0], "w")
+ofile  = open(outStats, "w")
 writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 writer.writerow(rowText)
 ofile.close()
