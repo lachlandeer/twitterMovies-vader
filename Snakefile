@@ -33,7 +33,7 @@ rule runChicagoDaily:
 rule chicagoDaily:
     input:
         script      = config["src_main"] + "driver_dailySentiment.py",
-        library     = config["out_lib"]  + "usrLib.zip",
+        library     = config["ROOT"]  + "usrLib.zip",
     params:
         folder     = 'twitter-chicago/' + "{iFolder}" + '/',
         thresholds = THRESHOLDS,
