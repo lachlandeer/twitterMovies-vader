@@ -454,7 +454,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     # Compute Sentiment and Classify
     sentimentData = returnCompoundScore(df, textCol)
     classifiedData = vaderClassify(sentimentData, vScore = 'vaderScore',
-                        outCol = 'vaderClassifier', thresholds)
+                        outCol = 'vaderClassifier', thresholds=thresholds)
 
     # identify unique movies
     moviesUnique = uniqueMovies(df, 'movieName')
