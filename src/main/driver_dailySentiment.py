@@ -32,9 +32,14 @@ sc = spark.sparkContext
 sql = spark.sql
 atexit.register(lambda: sc.stop())
 
+spark = SparkSession(sc)
+
 # for compatibility
 sqlContext = spark._wrapped
 sqlCtx = sqlContext
+
+
+
 ## Native Python
 import os
 import sys
