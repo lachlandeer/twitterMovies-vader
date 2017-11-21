@@ -449,7 +449,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     """
     # Load Data
     print('Loading the data from ', filePath)
-    df = loadTwitterData(filePath)
+    df = importTwitterData(filePath)
 
     # Compute Sentiment and Classify
     sentimentData = returnCompoundScore(df, textCol)
@@ -457,7 +457,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
     # identify unique movies
-    moviesUnique = uniqueMovies(df, 'movieName')
+    moviesUnique = uniqueMovies(classifiedData, 'movieName')
     print('I found ', len(moviesUnique), ' movies in ', filePath)
     print('The movies are:')
     print('\n'.join(str(iMovie) for iMovie in moviesUnique))
