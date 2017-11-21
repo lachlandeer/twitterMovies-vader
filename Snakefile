@@ -47,3 +47,9 @@ rule chicagoDaily:
             --thresholds {params.thresholds} \
             --outCounts {output.outCounts} \
             --outStats {output.outStats} > {log}"
+
+
+## clean
+rule cleanOut:
+    shell:
+        "rm -rf out/*"
