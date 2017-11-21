@@ -4,16 +4,18 @@
 import glob, os
 
 # --- Importing Configuration Files --- #
-
 configfile: "config.yaml"
 
-
 # --- Set up Dictionaries --- #
-CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
+#CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
                 in open(config['src_data'] + 'twitterFolders.txt')]
-# CHICAGODATA = ['DeerAntman']
+CHICAGODATA = ['DeerAntman']
 
+# --- Thresholds for VADER analysis --- #
 THRESHOLDS = "-1.00 -0.333 0.00 0.333 1.00"
+
+# --- Spark Submit Command --- #
+RUN_PYSPARK = spark-submit --master spark://master001:7077
 
 # --- Rules --- #
 ## runChicagoDaily:     run sentiment analysis on Chicago data
@@ -42,7 +44,7 @@ rule chicagoDaily:
     log: config["out_log"] + str("{iFolder}") + "_" + \
                          "daily.txt"
     shell:
-        "python {input.script} --dataPath {params.dataPath} \
+        "{RUN_PYSPARK} {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
             --thresholds {params.thresholds} \
             --outCounts {output.outCounts} \
