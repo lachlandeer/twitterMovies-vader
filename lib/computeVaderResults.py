@@ -384,55 +384,9 @@ def computeMovieStats(dataset, movieList):
 
 # --- CSV Writers --- #
 
-def vaderCounts2csv(dataset, inPath, outPath):
-    """
-    Write a pandas dataset of VaderCount Data to csv
-
-    Inputs:
-        - dataset: a spark dataset
-    Other Functions Called:
-        - NULL
-    Outputs:
-        - a csv file containing the number of tweets per
-            movie-day-vader classification
-    Example Usage:
-        vaderCounts2csv(vaderCounts, filePath, outCounts)
-    """
-    # make output directory if not created
-    if not os.path.exists(outPath):
-        os.makedirs(outPath)
-    # save to .csv File
-    fileName = os.path.basename(os.path.normpath(inPath)) \
-                + 'Counts.csv'
-    outFile  = outPath + fileName
+def data2csv(dataset, outPath):
     dataset.to_csv(outFile, index=False, encoding='utf-8')
-    print('VADER Counts saved to csv file', outFile)
-
-def vaderStats2csv(dataset, inPath, outPath):
-    """
-    Write a pandas dataset of VaderStats Data to csv
-
-    Inputs:
-        - dataset: a spark dataset
-    Other Functions Called:
-        - NULL
-    Outputs:
-        - a csv file containing the daily summary stats from
-            vader analysis for each movie in the data
-    Example Usage:
-        vaderCounts2csv(vaderCounts, filePath, outCounts)
-    """
-    # make output directory if not created
-    if not os.path.exists(outPath):
-        os.makedirs(outPath)
-
-    # save to .csv File
-    fileName = os.path.basename(os.path.normpath(inPath)) + 'Stats.csv'
-    outFile  = outPath + fileName
-    dataset.to_csv(outFile, index=False, encoding='utf-8')
-
-    print('VADER Stats saved to csv file', outFile)
-
+    print('saved ', dataset, 'to ', outFile)
 
 # --- Run VADER analysis ---#
 
@@ -496,12 +450,12 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     # (slow, but writes to local directory which other methods dont)
     print('Converting daily stats to Pandas DF, this may take a while...')
     pandasVaderStats = vaderStats.toPandas()
-    vaderStats2csv(pandasVaderStats, filePath, outStats)
+    data2csv(pandasVaderStats, outStats)
     del pandasVaderStats, vaderStats
 
     print ('Converting Count Data to Pandas DF, this may take a while...')
     pandasVaderCounts = vaderCounts.toPandas()
-    vaderCounts2csv(pandasVaderCounts, filePath, outCounts)
+    data2csv(pandasVaderCounts, outCounts)
     del pandasVaderCounts, vaderCounts
 
     # end of function
