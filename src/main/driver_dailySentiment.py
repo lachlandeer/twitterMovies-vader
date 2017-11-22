@@ -2,7 +2,6 @@
 Here is some basic text
 """
 # --- Import Libraries --- #
-
 ## Native Python
 import os
 import sys
@@ -12,7 +11,7 @@ import csv
 import argparse
 
 ## User written
-sys.path.append(str(Path('.').absolute()))
+#sys.path.append(str(Path('.').absolute()))
 import computeVaderResults as cvr
 
 # ---  Define command line options --- #
@@ -49,13 +48,8 @@ CLI.add_argument(
   default = ['./'],
 )
 
-
-
 # --- Parse the Command Line Options --- #
-
 args = CLI.parse_args()
-
-print sys.path
 print('Running PySpark in batch mode...')
 print("-------------------------------------------")
 print("Here are the specs for this job:")
@@ -74,8 +68,7 @@ outCounts       = args.outCounts[0]
 outStats        = args.outStats[0]
 vaderThresholds = args.thresholds
 
-# --# Run analysis --- #
-
+# --- Run analysis --- #
 startTime = time.time()
 print('Starting Job')
 
@@ -83,18 +76,6 @@ cvr.parseMovieData(fullPath, outStats, outCounts, textCol = 'body',
                     thresholds = vaderThresholds)
 
 print('Job Completed!')
-endTime = time.time() - t
-print('Job took:', elapsed / 60, 'minutes to complete!')
+totalTime = time.time() - startTime
+print('Job took:', totalTime / 60, 'minutes to complete!')
 print('Done! - Goodbye')
-
-# rowText = [1,2,3, "hat"]
-#
-# ofile  = open(outCounts, "w")
-# writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-# writer.writerow(rowText)
-# ofile.close()
-#
-# ofile  = open(outStats, "w")
-# writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-# writer.writerow(rowText)
-# ofile.close()
