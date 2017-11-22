@@ -65,3 +65,7 @@ rule zipPyModules:
 rule cleanOut:
     shell:
         "rm -rf out/*"
+
+rule cleanZip:
+    shell:
+        "rm *.zip"
