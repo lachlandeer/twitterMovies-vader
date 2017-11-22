@@ -385,7 +385,7 @@ def computeMovieStats(dataset, movieList):
 # --- CSV Writers --- #
 
 def data2csv(dataset, outPath):
-    dataset.to_csv(outFile, index=False, encoding='utf-8')
+    dataset.to_csv(outPath, index=False, encoding='utf-8')
     print('saved ', dataset, 'to ', outFile)
 
 # --- Run VADER analysis ---#
