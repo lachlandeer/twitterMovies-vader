@@ -56,7 +56,7 @@ rule zipPyModules:
     input:
         library = config["lib"]
     output:
-        zipDir = config["ROOT"]+ "tweetVader.zip"
+        zipDir = "tweetVader.zip"
     shell:
         "zip -jr  {output.zipDir} {input.library}"
 
