@@ -413,8 +413,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
         - vaderClassify()
         - uniqueMovies()
         - computeMovieStats()
-        - vaderStats2csv()
-        - vaderCounts2csv()
+        - data2csv()
     Outputs (as csv files written to disk):
         - outStats+filePath.csv: summary stats per movie-day
         - outCounts+filePath.csv: count of tweets per

@@ -31,7 +31,7 @@ rule runChicagoDaily:
 rule chicagoDaily:
     input:
         script      = config["src_main"] + "driver_dailySentiment.py",
-        library     = "tweetVader.zip",
+        library     = config["ROOT"]  + "tweetVader.zip",
     params:
         folder     = 'twitter-chicago/' + "{iFolder}" + '/',
         thresholds = THRESHOLDS,
