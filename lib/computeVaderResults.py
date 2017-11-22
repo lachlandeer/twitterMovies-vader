@@ -8,6 +8,7 @@ from pyspark.sql.functions import col, udf, avg, lit
 from pyspark.sql.functions import mean, stddev, min, max, count
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from pyspark.ml.feature import Bucketizer
+import os
 
 # --- Functions to Import Data --- #
 
