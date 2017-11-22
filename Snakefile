@@ -17,7 +17,7 @@ THRESHOLDS = "-1.00 -0.333 0.333 1.00"
 # --- Spark Submit Command --- #
 RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 
-# --- Rules --- #
+# --- Build Rules --- #
 ## runChicagoDaily:     run sentiment analysis on Chicago data
 
 rule runChicagoDaily:
@@ -27,8 +27,6 @@ rule runChicagoDaily:
         dataCounts = expand(config["out_stats"] + "{iFolder}.csv", \
                             iFolder = CHICAGODATA)
 
-## {params.folder} \
-#    {params.thresholds} {output.outCounts} {output.outStats} > {log}
 # chicagoDaily: vader Sentiment analysis at the daily level on twitter data from Chicago
 rule chicagoDaily:
     input:
@@ -60,12 +58,21 @@ rule zipPyModules:
     shell:
         "zip -jr  {output.zipDir} {input.library}"
 
-
-## clean
+# --- Clean Rules --- #
+## cleanOut:   clean output directory
 rule cleanOut:
     shell:
         "rm -rf out/*"
 
+# cleanZip:   clean out any zipped python modules from ROOT directory
 rule cleanZip:
     shell:
         "rm *.zip"
+
+# --- Help Rules --- #
+## help:                 provide simple info about each rule
+rule help:
+    input:
+        mainWorkflow = "Snakefile"
+    shell:
+        "sed -n 's/^##//p' {input.mainWorkflow}"
