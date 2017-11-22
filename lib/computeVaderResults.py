@@ -407,6 +407,32 @@ def vaderCounts2csv(dataset, inPath, outPath):
     dataset.to_csv(outFile, index=False, encoding='utf-8')
     print('VADER Counts saved to csv file', outFile)
 
+def vaderStats2csv(dataset, inPath, outPath):
+    """
+    Write a pandas dataset of VaderStats Data to csv
+
+    Inputs:
+        - dataset: a spark dataset
+    Other Functions Called:
+        - NULL
+    Outputs:
+        - a csv file containing the daily summary stats from
+            vader analysis for each movie in the data
+    Example Usage:
+        vaderCounts2csv(vaderCounts, filePath, outCounts)
+    """
+    # make output directory if not created
+    if not os.path.exists(outPath):
+        os.makedirs(outPath)
+
+    # save to .csv File
+    fileName = os.path.basename(os.path.normpath(inPath)) + 'Stats.csv'
+    outFile  = outPath + fileName
+    dataset.to_csv(outFile, index=False, encoding='utf-8')
+
+    print('VADER Stats saved to csv file', outFile)
+
+
 # --- Run VADER analysis ---#
 
 def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
