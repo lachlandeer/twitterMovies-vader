@@ -33,7 +33,7 @@ rule runChicagoDaily:
 rule chicagoDaily:
     input:
         script      = config["src_main"] + "driver_dailySentiment.py",
-        library     = config["ROOT"]  + "usrLib.zip",
+        library     = config["ROOT"]  + "tweetVader.zip",
     params:
         folder     = 'twitter-chicago/' + "{iFolder}" + '/',
         thresholds = THRESHOLDS,
@@ -56,9 +56,9 @@ rule zipPyModules:
     input:
         library = config["lib"]
     output:
-        zipDir = config["ROOT"] + "usrLib.zip"
+        zipDir = config["ROOT"]+ "tweetVader.zip"
     shell:
-        "zip -x *.pyc -r {output.zipDir} {input.library}"
+        "zip -jr  {output.zipDir} {input.library}"
 
 
 ## clean
