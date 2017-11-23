@@ -62,7 +62,7 @@ def loadTwitterData(filePath):
     sqlContext = spark._wrapped
     sqlCtx = sqlContext
 
-    df = spark.read.json(filePath + '*.gz')
+    df = spark.read.option("mode", DROPMALFORMED).json(filePath + '*.gz')
     return df
 
 def selectRelevantColumns(df):
