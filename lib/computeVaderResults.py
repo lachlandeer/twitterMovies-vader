@@ -67,7 +67,7 @@ def loadTwitterData(filePath):
         .option("mode", "DROPMALFORMED").json(filePath + '*.gz')
     return df
 
-def selectRelevantColumns(df):
+def selectRelevantColumns(df, filePath):
     """
     Select relevant columns of twitter data and clean them up by
         1. Filtering English Language tweets
@@ -100,7 +100,13 @@ def selectRelevantColumns(df):
     df2 = df2.withColumn('value', df2['value'].cast('string'))
 
     # rename
-    df2 = df2.withColumnRenamed("tag", "movieName")
+    if "gnip" in filePath:
+        print('working on GNIP Data...')
+        df2 = df2.withColumnRenamed("value", "movieName")
+    elif "chicago" in filePath:
+        print('working on Chicago Data...')
+        df2 = df2.withColumnRenamed("tag", "movieName")
+
     df2 = df2.withColumnRenamed("value", "searchPattern")
     return df2
 
@@ -121,7 +127,7 @@ def importTwitterData(filePath):
         my_data    = importTwitterData(dataPath)
     """
     dataSet = loadTwitterData(filePath)
-    smallData = selectRelevantColumns(dataSet)
+    smallData = selectRelevantColumns(dataSet, filePath)
     return smallData
 
 # --- Text Classification with VADER --- #
