@@ -50,6 +50,29 @@ rule chicagoDaily:
             --outCounts {output.outCounts} \
             --outStats {output.outStats} > {log}"
 
+# gnipDaily: vader Sentiment analysis at the daily level on twitter data from GNIP
+rule gnipDaily:
+    input:
+        script      = config["src_main"] + "driver_dailySentiment.py",
+        library     = "tweetVader.zip",
+    params:
+        folder     = 'twitter-gnip/downloads/',
+        thresholds = THRESHOLDS,
+        dataPath   = config["data_mount"]
+    output:
+        outCounts = config["out_counts"] + "gnip.csv",
+        outStats  = config["out_stats"] + "gnip.csv"
+    log: config["out_log"] + "gnip_daily.txt"
+    shell:
+        "{RUN_PYSPARK} \
+            --py-files {input.library} \
+            {input.script} --dataPath {params.dataPath} \
+            --folder {params.folder} \
+            --thresholds {params.thresholds} \
+            --outCounts {output.outCounts} \
+            --outStats {output.outStats} > {log}"
+
+
 rule zipPyModules:
     input:
         library = config["lib"]
