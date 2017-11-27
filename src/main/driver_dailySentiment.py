@@ -68,6 +68,8 @@ outCounts       = args.outCounts[0]
 outStats        = args.outStats[0]
 vaderThresholds = args.thresholds
 
+STOP
+
 # --- Run analysis --- #
 startTime = time.time()
 print('Starting Job')
