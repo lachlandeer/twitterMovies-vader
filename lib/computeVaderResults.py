@@ -487,7 +487,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
 
     for iMovie in moviesUnique:
         # recover counts and summary stats
-        vaderCounts, vaderStats = computeMovieStats(classifiedData, moviesUnique)
+        vaderCounts, vaderStats = computeMovieStats2(classifiedData, moviesUnique)
 
         # add to data set or create them if they dont exist
         # first, vader counts
