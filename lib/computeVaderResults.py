@@ -456,7 +456,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     print('\n'.join(str(iMovie) for iMovie in moviesUnique))
 
     # recover counts and summary stats
-    vaderCounts, vaderStats = computeMovieStats(classifiedData, moviesUnique[0:4])
+    vaderCounts, vaderStats = computeMovieStats(classifiedData, moviesUnique)
     # saving via pandas merge
     # (slow, but writes to local directory which other methods dont)
     print('Converting daily stats to Pandas DF, this may take a while...')
