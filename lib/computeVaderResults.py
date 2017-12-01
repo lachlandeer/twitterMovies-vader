@@ -393,6 +393,36 @@ def computeMovieStats(dataset, movieList):
 
     return allVaderCounts, allVaderStats
 
+def computeMovieStats2(dataset, movieName):
+    """
+    Calcuates the number of positive, negative and neutral
+    tweets for an individual movie per day and summary stats
+    from a list of movies.
+
+    Inputs:
+        - dataset: a spark DataFrame with tweets
+            classified into buckets
+        -moveiName: a to compute stats for
+    Other Functions Called:
+        - singleMovieTweets()
+        - vaderStats()
+        - vaderCountsByClassification()
+    Outputs:
+        - indivCounts: a spark DataFrame with each
+            movie-days number of tweets per classification
+    Example Usage:
+        computeMovieStats(classified_data, list_of_movies)
+    """
+    # get tweets for one movie
+    indivTweets = singleMovieTweets(dataset, movieList[idx])
+    # tweets Stats per day
+    indivStats = vaderStats(indivTweets, movieList[idx])
+    # tweet counts by type
+    indivCounts = vaderCountsByClassification(indivTweets, movieList[idx])
+
+    return indivStats, indivCounts
+
+
 # --- CSV Writers --- #
 
 def data2csv(dataset, outPath):
@@ -444,28 +474,42 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     df = importTwitterData(filePath)
 
     # Compute Sentiment and Classify
-    sentimentData = returnCompoundScore(df, textCol)
-    classifiedData = vaderClassify(sentimentData, vScore = 'vaderScore',
+    df = returnCompoundScore(df, textCol)
+    df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
     del df, sentimentData
     # identify unique movies
-    moviesUnique = uniqueMovies(classifiedData, 'movieName')
+    moviesUnique = uniqueMovies(df, 'movieName')
     print('I found ', len(moviesUnique), ' movies in ', filePath)
     print('The movies are:')
     print('\n'.join(str(iMovie) for iMovie in moviesUnique))
 
-    # recover counts and summary stats
-    vaderCounts, vaderStats = computeMovieStats(classifiedData, moviesUnique)
+    for iMovie in moviesUnique:
+        # recover counts and summary stats
+        vaderCounts, vaderStats = computeMovieStats(classifiedData, moviesUnique)
+
+        # add to data set or create them if they dont exist
+        # first, vader counts
+        if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = vaderCounts
+        if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = allVaderCounts.union(vaderCounts)
+        # second, the summary stats
+        if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
+            allVaderStats = vaderStats
+        if 'allVaderStats' in locals() or 'allVaderStats' in globals():
+            allVaderStats = allVaderStats.union(vaderStats)
+
     # saving via pandas merge
     # (slow, but writes to local directory which other methods dont)
     print('Converting daily stats to Pandas DF, this may take a while...')
-    pandasVaderStats = vaderStats.toPandas()
+    pandasVaderStats = allVaderStats.toPandas()
     data2csv(pandasVaderStats, outStats)
     del pandasVaderStats, vaderStats
 
     print ('Converting Count Data to Pandas DF, this may take a while...')
-    pandasVaderCounts = vaderCounts.toPandas()
+    pandasVaderCounts = allVaderCounts.toPandas()
     data2csv(pandasVaderCounts, outCounts)
     del pandasVaderCounts, vaderCounts
 
