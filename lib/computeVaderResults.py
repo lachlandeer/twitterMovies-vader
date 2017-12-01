@@ -478,7 +478,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
-    del df, sentimentData
+    #del df, sentimentData
     # identify unique movies
     moviesUnique = uniqueMovies(df, 'movieName')
     print('I found ', len(moviesUnique), ' movies in ', filePath)
