@@ -388,6 +388,9 @@ def computeMovieStats(dataset, movieList):
             allVaderStats = indivStats
         if 'allVaderStats' in locals() or 'allVaderStats' in globals():
             allVaderStats = allVaderStats.union(indivStats)
+
+        del indivTweets, indivStats, indivCounts
+
     return allVaderCounts, allVaderStats
 
 # --- CSV Writers --- #
@@ -445,6 +448,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     classifiedData = vaderClassify(sentimentData, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
+    del df, sentimentData
     # identify unique movies
     moviesUnique = uniqueMovies(classifiedData, 'movieName')
     print('I found ', len(moviesUnique), ' movies in ', filePath)
