@@ -411,7 +411,7 @@ def computeMovieStats2(dataset, movieName):
         - indivCounts: a spark DataFrame with each
             movie-days number of tweets per classification
     Example Usage:
-        computeMovieStats(classified_data, list_of_movies)
+        computeMovieStats2(classified_data, movie_name)
     """
     # get tweets for one movie
     indivTweets = singleMovieTweets(dataset, movieName)
