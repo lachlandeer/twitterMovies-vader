@@ -30,7 +30,7 @@ rule runChicagoDaily:
 # chicagoDaily: vader Sentiment analysis at the daily level on twitter data from Chicago
 rule chicagoDaily:
     input:
-        script      = config["src_main"] + "driver_dailySentiment.py",
+        script      = config["src_main"] + "driver_dailySentimentChicago.py",
         library     = "tweetVader.zip",
     params:
         folder     = 'twitter-chicago/' + "{iFolder}" + '/',
