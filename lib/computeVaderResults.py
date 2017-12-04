@@ -11,6 +11,7 @@ from pyspark.ml.feature import Bucketizer
 import os
 import math
 import json
+import pickle
 
 # --- Functions to Import Data --- #
 
@@ -519,6 +520,8 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
 
 # --- GNIP specific functions --- #
 
+## Chunking Up List of Unique Movies
+
 def chunks(longList, chunkSize):
     # For item i in a range that is a length of l,
     for i in range(0, len(longList), chunkSize):
@@ -528,7 +531,7 @@ def chunks(longList, chunkSize):
 def movieListSave(movieList, outPath, outFile):
 
     with open(outPath + outFile, 'w') as fileName:
-        json.dump(movieList, fileName)
+        pickle.dump(movieList, fileName)
 
 def identifyMovies(df, filePath):
 
@@ -552,3 +555,45 @@ def getMovieChunks(moviesUnique, outPath):
     for idx, iChunk in enumerate(chunkedList):
         outFile = 'gnipChunk_' + idx + '.txt'
         movieListSave(iChunk, outPath, outFile)
+
+## Processing a List of Movies:
+
+def parseGNIPMovieData(dataPath, movieList,  outStats, outCounts, textCol = 'body',
+                    thresholds = [-1.0, -0.5, 0.5, 1.0]):
+
+    # Load Data
+    print('Loading the data from ', filePath)
+    df = importTwitterData(filePath)
+
+    # Compute Sentiment and Classify
+    df = returnCompoundScore(df, textCol)
+    df = vaderClassify(df, vScore = 'vaderScore',
+                        outCol = 'vaderClassifier', thresholds=thresholds)
+
+    for iMovie in moviesUnique[0:20]:
+        # recover counts and summary stats
+        vaderCounts, vaderStats = computeMovieStats2(df, iMovie)
+
+    # add to data set or create them if they dont exist
+    # first, vader counts
+    if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
+        allVaderCounts = vaderCounts
+    if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
+        allVaderCounts = allVaderCounts.union(vaderCounts)
+    # second, the summary stats
+    if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
+        allVaderStats = vaderStats
+    if 'allVaderStats' in locals() or 'allVaderStats' in globals():
+        allVaderStats = allVaderStats.union(vaderStats)
+
+        # saving via pandas merge
+        # (slow, but writes to local directory which other methods dont)
+        print('Converting daily stats to Pandas DF, this may take a while...')
+        pandasVaderStats = allVaderStats.toPandas()
+        data2csv(pandasVaderStats, outStats)
+        del pandasVaderStats, vaderStats
+
+        print ('Converting Count Data to Pandas DF, this may take a while...')
+        pandasVaderCounts = allVaderCounts.toPandas()
+        data2csv(pandasVaderCounts, outCounts)
+        del pandasVaderCounts, vaderCounts
