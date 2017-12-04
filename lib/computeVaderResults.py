@@ -414,11 +414,11 @@ def computeMovieStats2(dataset, movieName):
         computeMovieStats(classified_data, list_of_movies)
     """
     # get tweets for one movie
-    indivTweets = singleMovieTweets(dataset, movieList[idx])
+    indivTweets = singleMovieTweets(dataset, movieName)
     # tweets Stats per day
-    indivStats = vaderStats(indivTweets, movieList[idx])
+    indivStats = vaderStats(indivTweets, movieName)
     # tweet counts by type
-    indivCounts = vaderCountsByClassification(indivTweets, movieList[idx])
+    indivCounts = vaderCountsByClassification(indivTweets, movieName)
 
     return indivStats, indivCounts
 
