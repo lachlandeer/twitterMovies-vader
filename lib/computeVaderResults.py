@@ -9,6 +9,8 @@ from pyspark.sql.functions import mean, stddev, min, max, count
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from pyspark.ml.feature import Bucketizer
 import os
+import math
+import json
 
 # --- Functions to Import Data --- #
 
@@ -514,3 +516,38 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     del pandasVaderCounts, vaderCounts
 
     # end of function
+
+# --- GNIP specific functions --- #
+
+def chunks(longList, chunkSize):
+    # For item i in a range that is a length of l,
+    for i in range(0, len(longList), chunkSize):
+        # Create an index range for l of n items:
+        yield longList[i:i+chunkSize]
+
+# def getChunksize(listSize, chunkSize=15):
+#
+#     return math.ceil(listSize / chunkSize)
+
+def movieListSave(movieList, outPath, outFile):
+
+    with open(outPath + outFile, 'w') as fileName:
+        json.dump(movieList, fileName)
+
+def identifyMovies(df, filePath, outPath):
+
+    print('Loading the data from ', filePath)
+    df = importTwitterData(filePath)
+
+    # identify unique movies
+    moviesUnique = uniqueMovies(df, 'movieName')
+    print('I found ', len(moviesUnique), ' movies in ', filePath)
+    print('The movies are:')
+    print('\n'.join(str(iMovie) for iMovie in moviesUnique))
+
+    nMovies   = len(moviesUnique)
+    chunkSize = 15
+
+    chunkedList = list(chunks(moviesUnique, chunkSize))
+
+    for idx, iChunk in enumerate(chunkedList):
