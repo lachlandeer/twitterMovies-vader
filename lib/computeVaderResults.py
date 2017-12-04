@@ -525,16 +525,12 @@ def chunks(longList, chunkSize):
         # Create an index range for l of n items:
         yield longList[i:i+chunkSize]
 
-# def getChunksize(listSize, chunkSize=15):
-#
-#     return math.ceil(listSize / chunkSize)
-
 def movieListSave(movieList, outPath, outFile):
 
     with open(outPath + outFile, 'w') as fileName:
         json.dump(movieList, fileName)
 
-def identifyMovies(df, filePath, outPath):
+def identifyMovies(df, filePath):
 
     print('Loading the data from ', filePath)
     df = importTwitterData(filePath)
@@ -545,9 +541,14 @@ def identifyMovies(df, filePath, outPath):
     print('The movies are:')
     print('\n'.join(str(iMovie) for iMovie in moviesUnique))
 
+    return moviesUnique
+
+def getMovieChunks(moviesUnique, outPath):
+
     nMovies   = len(moviesUnique)
     chunkSize = 15
-
     chunkedList = list(chunks(moviesUnique, chunkSize))
 
     for idx, iChunk in enumerate(chunkedList):
+        outFile = 'gnipChunk_' + idx + '.txt'
+        movieListSave(iChunk, outPath, outFile)
