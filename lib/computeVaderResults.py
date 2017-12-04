@@ -570,7 +570,12 @@ def parseGNIPMovieData(dataPath, movieList,  outStats, outCounts, textCol = 'bod
     df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
-    for iMovie in moviesUnique[0:20]:
+    # Load Movie List
+    f = open(movieList, 'r')
+    movies = pickle.load(f)
+    f.close()
+
+    for iMovie in movies:
         # recover counts and summary stats
         vaderCounts, vaderStats = computeMovieStats2(df, iMovie)
 
@@ -586,14 +591,14 @@ def parseGNIPMovieData(dataPath, movieList,  outStats, outCounts, textCol = 'bod
     if 'allVaderStats' in locals() or 'allVaderStats' in globals():
         allVaderStats = allVaderStats.union(vaderStats)
 
-        # saving via pandas merge
-        # (slow, but writes to local directory which other methods dont)
-        print('Converting daily stats to Pandas DF, this may take a while...')
-        pandasVaderStats = allVaderStats.toPandas()
-        data2csv(pandasVaderStats, outStats)
-        del pandasVaderStats, vaderStats
+    # saving via pandas merge
+    # (slow, but writes to local directory which other methods dont)
+    print('Converting daily stats to Pandas DF, this may take a while...')
+    pandasVaderStats = allVaderStats.toPandas()
+    data2csv(pandasVaderStats, outStats)
+    del pandasVaderStats, vaderStats
 
-        print ('Converting Count Data to Pandas DF, this may take a while...')
-        pandasVaderCounts = allVaderCounts.toPandas()
-        data2csv(pandasVaderCounts, outCounts)
-        del pandasVaderCounts, vaderCounts
+    print ('Converting Count Data to Pandas DF, this may take a while...')
+    pandasVaderCounts = allVaderCounts.toPandas()
+    data2csv(pandasVaderCounts, outCounts)
+    del pandasVaderCounts, vaderCounts
