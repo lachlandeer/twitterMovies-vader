@@ -576,7 +576,7 @@ def parseGNIPMovieData(dataPath, movieList,  outStats, outCounts, textCol = 'bod
     df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
-    # Load Movie List
+    # load list of movies
     f = open(movieList, 'r')
     movies = pickle.load(f)
     f.close()
