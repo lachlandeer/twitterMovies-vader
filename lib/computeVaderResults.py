@@ -481,14 +481,13 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
-    #del df, sentimentData
     # identify unique movies
-    moviesUnique = uniqueMovies(df, 'movieName')
-    print('I found ', len(moviesUnique), ' movies in ', filePath)
+    movies = uniqueMovies(df, 'movieName')
+    print(len(movies), ' movies in ', filePath)
     print('The movies are:')
-    print('\n'.join(str(iMovie) for iMovie in moviesUnique))
+    print('\n'.join(str(iMovie) for iMovie in movies))
 
-    for iMovie in moviesUnique[0:20]:
+    for iMovie in moviesUnique:
         # recover counts and summary stats
         vaderCounts, vaderStats = computeMovieStats2(df, iMovie)
 
