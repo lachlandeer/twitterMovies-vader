@@ -50,19 +50,25 @@ rule chicagoDaily:
             --outCounts {output.outCounts} \
             --outStats {output.outStats} > {log}"
 
+rule runGnipDaily:
+    input:
+        dataStats  = dynamic(config["out_counts"] + "{iBatch}_gnip.csv"),
+        dataCounts = dynamic(config["out_stats"] + "{iBatch}_gnip.csv")
+
 # gnipDaily: vader Sentiment analysis at the daily level on twitter data from GNIP
 rule gnipDaily:
     input:
-        script      = config["src_main"] + "driver_dailySentiment.py",
+        script      = config["src_main"] + "driver_dailySentimentChicago.py",
+        movieList   =  dynamic(config["out_list"] + "gnipChunk_{iChunk}.pickle"),
         library     = "tweetVader.zip",
     params:
         folder     = 'twitter-gnip/downloads/',
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = config["out_counts"] + "gnip.csv",
-        outStats  = config["out_stats"] + "gnip.csv"
-    log: config["out_log"] + "gnip_daily.txt"
+        outCounts = dynamic(config["out_gnip_counts"] + "{iBatch}_gnip.csv"),
+        outStats  = dynamic(config["out_gnip_stats"] + "{iBatch}_gnip.csv")
+    log: dynamic(config["out_log"] + "gnip_daily.txt")
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \

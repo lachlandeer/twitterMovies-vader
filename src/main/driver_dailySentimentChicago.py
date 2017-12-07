@@ -47,6 +47,12 @@ CLI.add_argument(
   type    = str,  # any type/callable can be used here
   default = ['./'],
 )
+CLI.add_argument(
+  "--movieList",  # name on the CLI - drop the `--` for positional/required parameters
+  nargs   = "*",  # 0 or more values expected => creates a list
+  type    = str,
+  default ='None',  # default if nothing is provided
+)
 
 # --- Parse the Command Line Options --- #
 args = CLI.parse_args()
@@ -67,12 +73,14 @@ fullPath        = dataPath + folderPath
 outCounts       = args.outCounts[0]
 outStats        = args.outStats[0]
 vaderThresholds = args.thresholds
+movieList       = args.movieList
 
 # --- Run analysis --- #
 startTime = time.time()
 print('Starting Job')
 
-cvr.parseMovieData(fullPath, outStats, outCounts, textCol = 'body',
+cvr.parseMovieData(fullPath, outStats, outCounts,
+                    movieList = movieList, textCol = 'body',
                     thresholds = vaderThresholds)
 
 print('Job Completed!')
