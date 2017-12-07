@@ -389,91 +389,6 @@ def data2csv(dataset, outPath):
     dataset.to_csv(outPath, index=False, encoding='utf-8')
     print('saved to ', outPath)
 
-# --- Run VADER analysis ---#
-
-def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
-                    thresholds = [-1.0, -0.5, 0.5, 1.0]):
-    """
-    Takes a path to a directory where twitter data is located
-    and then;
-        - Loads it
-        - Compute sentiment scores and bucketized classification
-        - finds list of unique movies
-        - computes counts and summary statistics
-        - writes counts and stats to csv files
-
-    Inputs:
-        - filePath
-        - textCol
-        - thresholds:
-        - outStats
-        - outCounts
-    Other functions Called:
-        - loadTwitterData()
-        - returnCompoundScore()
-        - vaderClassify()
-        - uniqueMovies()
-        - computeMovieStats()
-        - data2csv()
-    Outputs (as csv files written to disk):
-        - outStats+filePath.csv: summary stats per movie-day
-        - outCounts+filePath.csv: count of tweets per
-            classification-movie-day
-    Expected Usage:
-        data_path   = 'alluxio://master001:19998/twitter-chicago/DeerSet9/'
-        out_stats   = 'home/ubuntu/out/stats/'
-        out_counts  = 'home/ubuntu/out/counts/'
-        thresholds  = [-1.0. -0.333, 0.333, 1.00]
-        text_col    = 'tweet_text'
-
-        parseMovieData(data_path, text_col, thresholds,
-            out_stats, out_counts)
-    """
-    # Load Data
-    print('Loading the data from ', filePath)
-    df = importTwitterData(filePath)
-
-    # Compute Sentiment and Classify
-    df = returnCompoundScore(df, textCol)
-    df = vaderClassify(df, vScore = 'vaderScore',
-                        outCol = 'vaderClassifier', thresholds=thresholds)
-
-    # identify unique movies
-    movies = uniqueMovies(df, 'movieName')
-    print(len(movies), ' movies in ', filePath)
-    print('The movies are:')
-    print('\n'.join(str(iMovie) for iMovie in movies))
-
-    for iMovie in movies:
-        # recover counts and summary stats
-        vaderCounts, vaderStats = computeMovieStats(df, iMovie)
-
-        # add to data set or create them if they dont exist
-        # first, vader counts
-        if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
-            allVaderCounts = vaderCounts
-        if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
-            allVaderCounts = allVaderCounts.union(vaderCounts)
-        # second, the summary stats
-        if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
-            allVaderStats = vaderStats
-        if 'allVaderStats' in locals() or 'allVaderStats' in globals():
-            allVaderStats = allVaderStats.union(vaderStats)
-
-    # saving via pandas merge
-    # (slow, but writes to local directory which other methods dont)
-    print('Converting daily stats to Pandas DF, this may take a while...')
-    pandasVaderStats = allVaderStats.toPandas()
-    data2csv(pandasVaderStats, outStats)
-    del pandasVaderStats, vaderStats
-
-    print ('Converting Count Data to Pandas DF, this may take a while...')
-    pandasVaderCounts = allVaderCounts.toPandas()
-    data2csv(pandasVaderCounts, outCounts)
-    del pandasVaderCounts, vaderCounts
-
-    # end of function
-
 # --- GNIP specific functions --- #
 
 ## Chunking Up List of Unique Movies
@@ -519,9 +434,9 @@ def processGNIPFilters(dataPath, outPath):
     getMovieChunks(allFilters, outPath)
 
 
-## Processing a List of Movies:
+# --- Run VADER analysis ---#
 
-def parseGNIPMovieData(dataPath, outStats, outCounts,
+def parseMovieData(dataPath, outStats, outCounts,
                         movieList = 'None',textCol = 'body',
                         thresholds = [-1.0, -0.5, 0.5, 1.0]):
 
