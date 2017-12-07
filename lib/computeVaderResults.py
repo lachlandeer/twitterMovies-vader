@@ -526,7 +526,7 @@ def parseGNIPMovieData(dataPath, outStats, outCounts,
                         thresholds = [-1.0, -0.5, 0.5, 1.0]):
 
     # Load Data
-    print('Loading the data from ', filePath)
+    print('Loading the data from ', dataPath)
     df = importTwitterData(filePath)
 
     # Compute Sentiment and Classify
