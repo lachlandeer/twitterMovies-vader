@@ -50,11 +50,16 @@ print("-------------------------------------------")
 
 dataPath        = args.dataPath[0]
 folderPath      = args.folder[0]
+fullPath        = dataPath + folderPath
 outListFolder   = args.outListFolder[0]
 
 # --- Run analysis --- #
 startTime = time.time()
 print('Starting Job')
 
+cvr.processGNIPFilters(fullPath, outListFolder)
 
-cvr.parseMovieData(
+print('Job Completed!')
+totalTime = time.time() - startTime
+print('Job took:', totalTime / 60, 'minutes to complete!')
+print('Done! - Goodbye')
