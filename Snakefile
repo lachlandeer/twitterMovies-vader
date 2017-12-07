@@ -77,17 +77,18 @@ rule gnipMovieLists:
         script      = config["src_main"] + "driver_chunkGNIP.py",
         library     = "tweetVader.zip",
     params:
-        folder     = 'twitter-gnip/downloads/',
-        dataPath   = config["data_mount"]
+        folder        = 'twitter-gnip/downloads/',
+        dataPath      = config["data_mount"],
+        outListFolder = config["out_list"]
     output:
-        outLists  = dynamic(config["out_counts"] + "gnipChunk_{iChunk}.pickle"),
+        outLists  = dynamic(config["out_list"] + "gnipChunk_{iChunk}.pickle"),
     log: config["out_log"] + "gnip_Lists.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
             {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
-            --outLists {output.outCounts} \
+            --outListFolder {output.outCounts} \
             > {log}"
 
 

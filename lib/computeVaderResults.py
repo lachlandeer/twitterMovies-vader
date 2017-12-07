@@ -533,7 +533,7 @@ def movieListSave(movieList, outPath, outFile):
     with open(outPath + outFile, 'w') as fileName:
         pickle.dump(movieList, fileName)
 
-def identifyMovies(df, filePath):
+def identifyMovies(filePath):
 
     print('Loading the data from ', filePath)
     df = importTwitterData(filePath)
@@ -555,6 +555,13 @@ def getMovieChunks(moviesUnique, outPath):
     for idx, iChunk in enumerate(chunkedList):
         outFile = 'gnipChunk_' + idx + '.txt'
         movieListSave(iChunk, outPath, outFile)
+
+
+def processGNIPFilters(dataPath, outPath):
+
+    allFilters = identifyMovies(dataPath)
+    getMovieChunks(allFilters, outPath)
+
 
 ## Processing a List of Movies:
 
