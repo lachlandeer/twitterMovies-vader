@@ -423,7 +423,7 @@ def computeMovieStats2(dataset, movieName):
     # tweet counts by type
     indivCounts = vaderCountsByClassification(indivTweets, movieName)
 
-    return indivStats, indivCounts
+    return indivCounts, indivStats
 
 
 # --- CSV Writers --- #
