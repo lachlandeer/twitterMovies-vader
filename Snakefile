@@ -30,7 +30,7 @@ rule runChicagoDaily:
 # chicagoDaily: vader Sentiment analysis at the daily level on twitter data from Chicago
 rule chicagoDaily:
     input:
-        script      = config["src_main"] + "driver_dailySentimentChicago.py",
+        script      = config["src_main"] + "driver_dailySentiment.py",
         library     = "tweetVader.zip",
     params:
         folder     = 'twitter-chicago/' + "{iFolder}" + '/',
@@ -58,7 +58,7 @@ rule runGnipDaily:
 # gnipDaily: vader Sentiment analysis at the daily level on twitter data from GNIP
 rule gnipDaily:
     input:
-        script      = config["src_main"] + "driver_dailySentimentChicago.py",
+        script      = config["src_main"] + "driver_dailySentiment.py",
         movieList   =  dynamic(config["out_list"] + "gnipChunk_{iChunk}.pickle"),
         library     = "tweetVader.zip",
     params:
