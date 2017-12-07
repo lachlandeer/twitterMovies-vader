@@ -537,7 +537,7 @@ def parseGNIPMovieData(dataPath, outStats, outCounts,
     if movieList == 'None':
         print('No movieList passed across, finding unique movies in data')
         movies = uniqueMovies(df, 'movieName')
-        print(len(movies), ' movies in ', filePath)
+        print(len(movies), ' movies in ', dataPath)
         print('The movies are:')
         print('\n'.join(str(iMovie) for iMovie in movies))
     else:
