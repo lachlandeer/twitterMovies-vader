@@ -521,8 +521,9 @@ def processGNIPFilters(dataPath, outPath):
 
 ## Processing a List of Movies:
 
-def parseGNIPMovieData(dataPath, movieList,  outStats, outCounts, textCol = 'body',
-                    thresholds = [-1.0, -0.5, 0.5, 1.0]):
+def parseGNIPMovieData(dataPath, outStats, outCounts,
+                        movieList = 'None',textCol = 'body',
+                        thresholds = [-1.0, -0.5, 0.5, 1.0]):
 
     # Load Data
     print('Loading the data from ', filePath)
@@ -533,10 +534,18 @@ def parseGNIPMovieData(dataPath, movieList,  outStats, outCounts, textCol = 'bod
     df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
-    # load list of movies
-    f = open(movieList, 'r')
-    movies = pickle.load(f)
-    f.close()
+    if movieList == 'None':
+        print('No movieList passed across, finding unique movies in data')
+        movies = uniqueMovies(df, 'movieName')
+        print(len(movies), ' movies in ', filePath)
+        print('The movies are:')
+        print('\n'.join(str(iMovie) for iMovie in movies))
+    else:
+        print('movieList passed across, loading from file')
+        # load list of movies from pickle
+        f = open(movieList, 'r')
+        movies = pickle.load(f)
+        f.close()
 
     for iMovie in movies:
         # recover counts and summary stats

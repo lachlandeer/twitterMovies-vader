@@ -72,7 +72,7 @@ vaderThresholds = args.thresholds
 startTime = time.time()
 print('Starting Job')
 
-cvr.parseMovieData(fullPath, outStats, outCounts, textCol = 'body',
+cvr.parseGNIPMovieData(fullPath, outStats, outCounts, textCol = 'body',
                     thresholds = vaderThresholds)
 
 print('Job Completed!')
