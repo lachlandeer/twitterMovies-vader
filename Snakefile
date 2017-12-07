@@ -52,8 +52,8 @@ rule chicagoDaily:
 
 rule runGnipDaily:
     input:
-        dataStats  = dynamic(config["out_counts"] + "{iBatch}_gnip.csv"),
-        dataCounts = dynamic(config["out_stats"] + "{iBatch}_gnip.csv")
+        dataStats  = dynamic(config["out_gnip_counts"] + "{iBatch}_gnip.csv"),
+        dataCounts = dynamic(config["out_gnip_stats"] + "{iBatch}_gnip.csv")
 
 # gnipDaily: vader Sentiment analysis at the daily level on twitter data from GNIP
 rule gnipDaily:
@@ -76,7 +76,8 @@ rule gnipDaily:
             --folder {params.folder} \
             --thresholds {params.thresholds} \
             --outCounts {output.outCounts} \
-            --outStats {output.outStats} > {log}"
+            --outStats {output.outStats} \
+            --movieList {input.movieList} > {log}"
 
 # runGnipMovieLists: process the gnip data and save lists of movies
 rule runGnipMovieLists:
