@@ -72,6 +72,12 @@ rule gnipDaily:
             --outCounts {output.outCounts} \
             --outStats {output.outStats} > {log}"
 
+# runGnipMovieLists: process the gnip data and save lists of movies
+rule runGnipMovieLists:
+    input:
+        pickles = dynamic(config["out_list"] + "gnipChunk_{iChunk}.pickle"),
+
+# gnipMovieLists: recipe to create movie lists from GNIP data
 rule gnipMovieLists:
     input:
         script      = config["src_main"] + "driver_chunkGNIP.py",
@@ -88,7 +94,7 @@ rule gnipMovieLists:
             --py-files {input.library} \
             {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
-            --outListFolder {output.outCounts} \
+            --outListFolder {output.outLists} \
             > {log}"
 
 
