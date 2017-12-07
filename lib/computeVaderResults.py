@@ -424,7 +424,7 @@ def getMovieChunks(moviesUnique, outPath):
     chunkedList = list(chunks(moviesUnique, chunkSize))
 
     for idx, iChunk in enumerate(chunkedList):
-        outFile = 'gnipChunk_' + idx + '.txt'
+        outFile = 'gnipChunk_' + str(idx) + '.pickle'
         movieListSave(iChunk, outPath, outFile)
 
 
