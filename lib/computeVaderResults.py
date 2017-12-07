@@ -353,50 +353,7 @@ def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
                     ascending=False)
     return dailyStats
 
-def computeMovieStats(dataset, movieList):
-    """
-    Calcuates the number of positive, negative and neutral
-    tweets for an individual movie per day and summary stats
-    from a list of movies.
-
-    Inputs:
-        - dataset: a spark DataFrame with tweets
-            classified into buckets
-        - movieList: a list of movies to compute stats for
-    Other Functions Called:
-        - singleMovieTweets()
-        - vaderStats()
-        - vaderCountsByClassification()
-    Outputs:
-        - indivCounts: a spark DataFrame with each
-            movie-days number of tweets per classification
-    Example Usage:
-        computeMovieStats(classified_data, list_of_movies)
-    """
-    for idx, movieTitle in enumerate(movieList): # for all unique movies
-        # get tweets for one movie
-        indivTweets = singleMovieTweets(dataset, movieList[idx])
-        # tweets Stats per day
-        indivStats = vaderStats(indivTweets, movieList[idx])
-        # tweet counts by type
-        indivCounts = vaderCountsByClassification(indivTweets, movieList[idx])
-        # add to data set or create them if they dont exist
-        # first, vader counts
-        if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
-            allVaderCounts = indivCounts
-        if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
-            allVaderCounts = allVaderCounts.union(indivCounts)
-        # second, the summary stats
-        if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
-            allVaderStats = indivStats
-        if 'allVaderStats' in locals() or 'allVaderStats' in globals():
-            allVaderStats = allVaderStats.union(indivStats)
-
-        del indivTweets, indivStats, indivCounts
-
-    return allVaderCounts, allVaderStats
-
-def computeMovieStats2(dataset, movieName):
+def computeMovieStats(dataset, movieName):
     """
     Calcuates the number of positive, negative and neutral
     tweets for an individual movie per day and summary stats
@@ -489,7 +446,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
 
     for iMovie in movies:
         # recover counts and summary stats
-        vaderCounts, vaderStats = computeMovieStats2(df, iMovie)
+        vaderCounts, vaderStats = computeMovieStats(df, iMovie)
 
         # add to data set or create them if they dont exist
         # first, vader counts
@@ -583,7 +540,7 @@ def parseGNIPMovieData(dataPath, movieList,  outStats, outCounts, textCol = 'bod
 
     for iMovie in movies:
         # recover counts and summary stats
-        vaderCounts, vaderStats = computeMovieStats2(df, iMovie)
+        vaderCounts, vaderStats = computeMovieStats(df, iMovie)
 
     # add to data set or create them if they dont exist
     # first, vader counts
