@@ -487,7 +487,7 @@ def parseMovieData(filePath, outStats, outCounts, textCol = 'body',
     print('The movies are:')
     print('\n'.join(str(iMovie) for iMovie in movies))
 
-    for iMovie in moviesUnique:
+    for iMovie in movies:
         # recover counts and summary stats
         vaderCounts, vaderStats = computeMovieStats2(df, iMovie)
 
