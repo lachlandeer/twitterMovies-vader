@@ -59,16 +59,16 @@ rule runGnipDaily:
 rule gnipDaily:
     input:
         script      = config["src_main"] + "driver_dailySentiment.py",
-        movieList   =  dynamic(config["out_list"] + "{iChunk}_gnipChunk.pickle"),
+        movieList   = config["out_list"] + "{iChunk}_gnipChunk.pickle",
         library     = "tweetVader.zip",
     params:
         folder     = 'twitter-gnip/downloads/',
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = dynamic(config["out_gnip_counts"] + "{iChunk}_gnip.csv"),
-        outStats  = dynamic(config["out_gnip_stats"] + "{iChunk}_gnip.csv")
-    log: dynamic(config["out_log"] + "{iChunk}_gnip_daily.txt")
+        outCounts = config["out_gnip_counts"] + "{iChunk}_gnip.csv",
+        outStats  = config["out_gnip_stats"] + "{iChunk}_gnip.csv"
+    log: config["out_log"] + "{iChunk}_gnip_daily.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
@@ -82,7 +82,7 @@ rule gnipDaily:
 # runGnipMovieLists: process the gnip data and save lists of movies
 rule runGnipMovieLists:
     input:
-        pickles = dynamic(config["out_list"] + "gnipChunk_{iChunk}.pickle"),
+        pickles = dynamic(config["out_list"] + "{iChunk}_gnipChunk.pickle"),
 
 # gnipMovieLists: recipe to create movie lists from GNIP data
 rule gnipMovieLists:
