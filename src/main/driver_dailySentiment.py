@@ -73,7 +73,7 @@ fullPath        = dataPath + folderPath
 outCounts       = args.outCounts[0]
 outStats        = args.outStats[0]
 vaderThresholds = args.thresholds
-movieList       = args.movieList
+movieList       = args.movieList[0]
 
 # --- Run analysis --- #
 startTime = time.time()
