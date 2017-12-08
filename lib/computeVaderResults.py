@@ -466,17 +466,17 @@ def parseMovieData(dataPath, outStats, outCounts,
         # recover counts and summary stats
         vaderCounts, vaderStats = computeMovieStats(df, iMovie)
 
-    # add to data set or create them if they dont exist
-    # first, vader counts
-    if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
-        allVaderCounts = vaderCounts
-    if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
-        allVaderCounts = allVaderCounts.union(vaderCounts)
-    # second, the summary stats
-    if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
-        allVaderStats = vaderStats
-    if 'allVaderStats' in locals() or 'allVaderStats' in globals():
-        allVaderStats = allVaderStats.union(vaderStats)
+        # add to data set or create them if they dont exist
+        # first, vader counts
+        if 'allVaderCounts' not in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = vaderCounts
+        if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
+            allVaderCounts = allVaderCounts.union(vaderCounts)
+        # second, the summary stats
+        if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
+            allVaderStats = vaderStats
+        if 'allVaderStats' in locals() or 'allVaderStats' in globals():
+            allVaderStats = allVaderStats.union(vaderStats)
 
     # saving via pandas merge
     # (slow, but writes to local directory which other methods dont)
