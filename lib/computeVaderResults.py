@@ -420,7 +420,7 @@ def identifyMovies(filePath):
 def getMovieChunks(moviesUnique, outPath):
 
     nMovies   = len(moviesUnique)
-    chunkSize = 15
+    chunkSize = 10
     chunkedList = list(chunks(moviesUnique, chunkSize))
 
     for idx, iChunk in enumerate(chunkedList):
