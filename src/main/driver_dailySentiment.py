@@ -51,7 +51,7 @@ CLI.add_argument(
   "--movieList",  # name on the CLI - drop the `--` for positional/required parameters
   nargs   = "*",  # 0 or more values expected => creates a list
   type    = str,
-  default ='None',  # default if nothing is provided
+  default = ['None'],  # default if nothing is provided
 )
 
 # --- Parse the Command Line Options --- #
