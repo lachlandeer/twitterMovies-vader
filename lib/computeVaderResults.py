@@ -437,7 +437,7 @@ def processGNIPFilters(dataPath, outPath):
 # --- Run VADER analysis ---#
 
 def parseMovieData(dataPath, outStats, outCounts,
-                        movieList = 'None',textCol = 'body',
+                        movieList, textCol = 'body',
                         thresholds = [-1.0, -0.5, 0.5, 1.0]):
 
     # Load Data
@@ -448,6 +448,8 @@ def parseMovieData(dataPath, outStats, outCounts,
     df = returnCompoundScore(df, textCol)
     df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
+
+    #print('The value of movie List is: ', movieList)
 
     if movieList == 'None':
         print('No movieList passed across, finding unique movies in data')
