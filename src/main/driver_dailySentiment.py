@@ -65,7 +65,7 @@ print("folder    : %r" % args.folder)
 print("thresholds: %r" % args.thresholds)
 print("outCounts : %r" % args.outCounts)
 print("outStats  : %r" % args.outStats)
-print("movieList : %r" % args.movieList")
+print("movieList : %r" % args.movieList)
 print("-------------------------------------------")
 
 dataPath        = args.dataPath[0]
