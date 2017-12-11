@@ -65,6 +65,7 @@ print("folder    : %r" % args.folder)
 print("thresholds: %r" % args.thresholds)
 print("outCounts : %r" % args.outCounts)
 print("outStats  : %r" % args.outStats)
+print("movieList : %r" % args.movieList")
 print("-------------------------------------------")
 
 dataPath        = args.dataPath[0]
@@ -74,6 +75,8 @@ outCounts       = args.outCounts[0]
 outStats        = args.outStats[0]
 vaderThresholds = args.thresholds
 movieList       = args.movieList[0]
+
+print('movieList is: ', movieList)
 
 # --- Run analysis --- #
 startTime = time.time()
