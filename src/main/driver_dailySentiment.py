@@ -76,7 +76,7 @@ outStats        = args.outStats[0]
 vaderThresholds = args.thresholds
 movieList       = args.movieList[0]
 
-print('movieList is: ', movieList)
+#print('movieList is: ', movieList)
 
 # --- Run analysis --- #
 startTime = time.time()

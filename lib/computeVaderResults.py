@@ -449,7 +449,7 @@ def parseMovieData(dataPath, outStats, outCounts,
     df = vaderClassify(df, vScore = 'vaderScore',
                         outCol = 'vaderClassifier', thresholds=thresholds)
 
-    print('The value of movie List is: ', movieList)
+    #print('The value of movie List is: ', movieList)
 
     if movieList == 'None':
         print('No movieList passed across, finding unique movies in data')
