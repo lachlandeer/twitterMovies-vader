@@ -94,7 +94,7 @@ rule gnipMovieLists:
         dataPath      = config["data_mount"],
         outListFolder = config["out_list"]
     output:
-        outLists  = dynamic(config["out_list"] + {iChunk}.pickle"),
+        outLists  = dynamic(config["out_list"] + "{iChunk}.pickle"),
     log: config["out_log"] + "gnip_Lists.txt"
     shell:
         "{RUN_PYSPARK} \
