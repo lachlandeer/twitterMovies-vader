@@ -59,15 +59,15 @@ rule runGnipDaily:
 rule gnipDaily:
     input:
         script      = config["src_main"] + "driver_dailySentiment.py",
-        movieList   = config["out_list"] + "gnipChunk_{iChunk}.pickle",
+        movieList   = config["out_list"] + "{iChunk}.pickle",
         library     = "tweetVader.zip",
     params:
         folder     = 'twitter-gnip/downloads/',
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = config["out_gnip_counts"] + "{iChunk}_gnip.csv",
-        outStats  = config["out_gnip_stats"] + "{iChunk}_gnip.csv"
+        outCounts = config["out_gnip_counts"] + "{iChunk}.csv",
+        outStats  = config["out_gnip_stats"] + "{iChunk}.csv"
     log: config["out_log"] + "{iChunk}_gnip_daily.txt"
     shell:
         "{RUN_PYSPARK} \
@@ -94,7 +94,7 @@ rule gnipMovieLists:
         dataPath      = config["data_mount"],
         outListFolder = config["out_list"]
     output:
-        outLists  = dynamic(config["out_list"] + "gnipChunk_{iChunk}.pickle"),
+        outLists  = dynamic(config["out_list"] + {iChunk}.pickle"),
     log: config["out_log"] + "gnip_Lists.txt"
     shell:
         "{RUN_PYSPARK} \
