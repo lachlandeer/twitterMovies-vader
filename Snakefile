@@ -52,8 +52,8 @@ rule chicagoDaily:
 
 rule runGnipDaily:
     input:
-        dataStats  = dynamic(config["out_gnip_counts"] + "{iChunk}_gnip.csv"),
-        dataCounts = dynamic(config["out_gnip_stats"] + "{iChunk}_gnip.csv")
+        dataStats  = dynamic(config["out_gnip_counts"] + "{iChunk}.csv"),
+        dataCounts = dynamic(config["out_gnip_stats"] + "{iChunk}.csv")
 
 # gnipDaily: vader Sentiment analysis at the daily level on twitter data from GNIP
 rule gnipDaily:
@@ -68,7 +68,7 @@ rule gnipDaily:
     output:
         outCounts = config["out_gnip_counts"] + "{iChunk}.csv",
         outStats  = config["out_gnip_stats"] + "{iChunk}.csv"
-    log: config["out_log"] + "{iChunk}_gnip_daily.txt"
+    log: config["out_log"] + "{iChunk}_vaderDaily.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
