@@ -82,7 +82,7 @@ rule gnipDaily:
 # runGnipMovieLists: process the gnip data and save lists of movies
 rule runGnipMovieLists:
     input:
-        pickles = dynamic(config["out_list"] + "gnipChunk_{iChunk}.pickle"),
+        pickles = dynamic(config["out_list"] + "{iChunk}.pickle"),
 
 # gnipMovieLists: recipe to create movie lists from GNIP data
 rule gnipMovieLists:
