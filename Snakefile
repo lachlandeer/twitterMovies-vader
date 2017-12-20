@@ -98,7 +98,6 @@ rule gnipMovieLists:
     log: config["out_log"] + "gnip_Lists.txt"
     shell:
         "{RUN_PYSPARK} \
-            --conf spark.network.timeout=600s \
             --py-files {input.library} \
             {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
