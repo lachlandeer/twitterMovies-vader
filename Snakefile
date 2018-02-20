@@ -19,18 +19,18 @@ RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 
 # --- Build Rules --- #
 ## runDailyAnalysis:   compute all daily statistucs
-rule runDailyAnalysis
-input:
-    gnipStats  = dynamic(config["out_gnip_counts"] +
-                            "daily/" + "{iChunk}.csv"),
-    gnipCounts = dynamic(config["out_gnip_stats"]  +
-                            "daily/" + "{iChunk}.csv"),
-    chicagoStats = expand(config["out_chicago_counts"] +
-                            "daily/" + "{iFolder}.csv", \
-                            iFolder = CHICAGODATA),
-    chicagoCounts = expand(config["out_chicago_stats"] +
-                            "daily/" + "{iFolder}.csv", \
-                            iFolder = CHICAGODATA)
+rule runDailyAnalysis:
+    input:
+        gnipStats  = dynamic(config["out_gnip_counts"] +
+                                "daily/" + "{iChunk}.csv"),
+        gnipCounts = dynamic(config["out_gnip_stats"]  +
+                                "daily/" + "{iChunk}.csv"),
+        chicagoStats = expand(config["out_chicago_counts"] +
+                                "daily/" + "{iFolder}.csv", \
+                                iFolder = CHICAGODATA),
+        chicagoCounts = expand(config["out_chicago_stats"] +
+                                "daily/" + "{iFolder}.csv", \
+                                iFolder = CHICAGODATA)
 
 ## runChicagoDaily:     run sentiment analysis on Chicago data
 rule runChicagoDaily:
