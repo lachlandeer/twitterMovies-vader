@@ -18,13 +18,17 @@ THRESHOLDS = "-1.00 -0.333 0.333 1.00"
 RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 
 # --- Build Rules --- #
+## runDailyAnalysis:   compute all daily statistucs
+input:
+
+
 ## runChicagoDaily:     run sentiment analysis on Chicago data
 
 rule runChicagoDaily:
     input:
-        dataStats = expand(config["out_counts"] + "daily/" + "{iFolder}.csv", \
+        dataStats = expand(config["out_chicago_counts"] + "daily/" + "{iFolder}.csv", \
                             iFolder = CHICAGODATA),
-        dataCounts = expand(config["out_stats"] + "daily/" + "{iFolder}.csv", \
+        dataCounts = expand(config["out_chicago_stats"] + "daily/" + "{iFolder}.csv", \
                             iFolder = CHICAGODATA)
 
 # chicagoDaily: vader Sentiment analysis at the daily level on twitter data from Chicago
@@ -37,8 +41,8 @@ rule chicagoDaily:
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = config["out_counts"] + "daily/" + "{iFolder}.csv",
-        outStats  = config["out_stats"]  + "daily/" + "{iFolder}.csv"
+        outCounts = config["out_chicago_counts"] + "daily/" + "{iFolder}.csv",
+        outStats  = config["out_chicago_stats"]  + "daily/" + "{iFolder}.csv"
     log: config["out_log"] + "daily/" + str("{iFolder}") + "_" + \
                          "daily.txt"
     shell:
