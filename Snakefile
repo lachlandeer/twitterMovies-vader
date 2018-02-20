@@ -22,9 +22,9 @@ RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 
 rule runChicagoDaily:
     input:
-        dataStats = expand(config["out_counts"] + "{iFolder}.csv", \
+        dataStats = expand(config["out_counts"] + "daily/" + "{iFolder}.csv", \
                             iFolder = CHICAGODATA),
-        dataCounts = expand(config["out_stats"] + "{iFolder}.csv", \
+        dataCounts = expand(config["out_stats"] + "daily/" + "{iFolder}.csv", \
                             iFolder = CHICAGODATA)
 
 # chicagoDaily: vader Sentiment analysis at the daily level on twitter data from Chicago
@@ -37,9 +37,9 @@ rule chicagoDaily:
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = config["out_counts"] + "{iFolder}.csv",
-        outStats  = config["out_stats"] + "{iFolder}.csv"
-    log: config["out_log"] + str("{iFolder}") + "_" + \
+        outCounts = config["out_counts"] + "daily/" + "{iFolder}.csv",
+        outStats  = config["out_stats"]  + "daily/" + "{iFolder}.csv"
+    log: config["out_log"] + "daily/" + str("{iFolder}") + "_" + \
                          "daily.txt"
     shell:
         "{RUN_PYSPARK} \
@@ -52,8 +52,10 @@ rule chicagoDaily:
 
 rule runGnipDaily:
     input:
-        dataStats  = dynamic(config["out_gnip_counts"] + "{iChunk}.csv"),
-        dataCounts = dynamic(config["out_gnip_stats"] + "{iChunk}.csv")
+        dataStats  = dynamic(config["out_gnip_counts"] +
+                                "daily/" + "{iChunk}.csv"),
+        dataCounts = dynamic(config["out_gnip_stats"]  +
+                                "daily/" + "{iChunk}.csv")
 
 # gnipDaily: vader Sentiment analysis at the daily level on twitter data from GNIP
 rule gnipDaily:
@@ -66,9 +68,9 @@ rule gnipDaily:
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = config["out_gnip_counts"] + "{iChunk}.csv",
-        outStats  = config["out_gnip_stats"] + "{iChunk}.csv"
-    log: config["out_log"] + "{iChunk}_vaderDaily.txt"
+        outCounts = config["out_gnip_counts"] + "daily/" + "{iChunk}.csv",
+        outStats  = config["out_gnip_stats"]  + "daily/" + "{iChunk}.csv"
+    log: config["out_log"] + "daily/" + "{iChunk}_vaderDaily.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
@@ -95,7 +97,7 @@ rule gnipMovieLists:
         outListFolder = config["out_list"]
     output:
         outLists  = dynamic(config["out_list"] + "{iChunk}.pickle"),
-    log: config["out_log"] + "gnip_Lists.txt"
+    log: config["out_log"] + "gnip_lists.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
