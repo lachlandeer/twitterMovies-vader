@@ -19,6 +19,7 @@ RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 
 # --- Build Rules --- #
 ## runDailyAnalysis:   compute all daily statistucs
+rule runDailyAnalysis
 input:
     gnipStats  = dynamic(config["out_gnip_counts"] +
                             "daily/" + "{iChunk}.csv"),
