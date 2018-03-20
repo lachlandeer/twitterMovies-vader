@@ -1,5 +1,10 @@
 ## Main Workflow: twitterMovies-vader
+## branch: vader-daily-binary
 ## Contributor: @lachlandeer
+##
+## Compute vader counts for binary outcomes
+##  (positive,negative)
+
 
 import glob, os
 
@@ -12,7 +17,7 @@ CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
 #CHICAGODATA = ['DeerAntMan']
 
 # --- Thresholds for VADER analysis --- #
-THRESHOLDS = "-1.00 -0.333 0.333 1.00"
+THRESHOLDS = "-1.00 0.00 1.00"
 
 # --- Spark Submit Command --- #
 RUN_PYSPARK = "spark-submit --master spark://master001:7077"
