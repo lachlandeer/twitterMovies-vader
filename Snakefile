@@ -133,6 +133,15 @@ rule zipPyModules:
     shell:
         "zip -jr  {output.zipDir} {input.library}"
 
+# --- Restart Rules ---#
+rule restart_spark:
+    shell:
+        "sudo systemctl restart spark-master.service"
+
+rule restart_alluxio:
+    shell:
+        "sudo /usr/lib/alluxio/bin/alluxio-start.sh all"
+
 # --- Clean Rules --- #
 ## cleanOut:   clean output directory
 rule cleanOut:
