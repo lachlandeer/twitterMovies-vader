@@ -22,22 +22,22 @@ RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 rule runDailyAnalysis:
     input:
         gnipStats  = dynamic(config["out_gnip_counts"] +
-                                "daily/" + "{iChunk}.csv"),
+                                "daily-0.05/" + "{iChunk}.csv"),
         gnipCounts = dynamic(config["out_gnip_stats"]  +
-                                "daily/" + "{iChunk}.csv"),
+                                "daily-0.05/" + "{iChunk}.csv"),
         chicagoStats = expand(config["out_chicago_counts"] +
-                                "daily/" + "{iFolder}.csv", \
+                                "daily-0.05/" + "{iFolder}.csv", \
                                 iFolder = CHICAGODATA),
         chicagoCounts = expand(config["out_chicago_stats"] +
-                                "daily/" + "{iFolder}.csv", \
+                                "daily-0.05/" + "{iFolder}.csv", \
                                 iFolder = CHICAGODATA)
 
 ## runChicagoDaily:     run sentiment analysis on Chicago data
 rule runChicagoDaily:
     input:
-        dataStats = expand(config["out_chicago_counts"] + "daily/" + "{iFolder}.csv", \
+        dataStats = expand(config["out_chicago_counts"] + "daily-0.05/" + "{iFolder}.csv", \
                             iFolder = CHICAGODATA),
-        dataCounts = expand(config["out_chicago_stats"] + "daily/" + "{iFolder}.csv", \
+        dataCounts = expand(config["out_chicago_stats"] + "daily-0.05/" + "{iFolder}.csv", \
                             iFolder = CHICAGODATA)
 
 # chicagoDaily: vader Sentiment analysis at the daily level on twitter data from Chicago
@@ -50,9 +50,9 @@ rule chicagoDaily:
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = config["out_chicago_counts"] + "daily/" + "{iFolder}.csv",
-        outStats  = config["out_chicago_stats"]  + "daily/" + "{iFolder}.csv"
-    log: config["out_log"] + "daily/" + str("{iFolder}") + "_" + \
+        outCounts = config["out_chicago_counts"] + "daily-0.05/" + "{iFolder}.csv",
+        outStats  = config["out_chicago_stats"]  + "daily-0.05/" + "{iFolder}.csv"
+    log: config["out_log"] + "daily-0.05/" + str("{iFolder}") + "_" + \
                          "daily.txt"
     shell:
         "{RUN_PYSPARK} \
@@ -66,9 +66,9 @@ rule chicagoDaily:
 rule runGnipDaily:
     input:
         dataStats  = dynamic(config["out_gnip_counts"] +
-                                "daily/" + "{iChunk}.csv"),
+                                "daily-0.05/" + "{iChunk}.csv"),
         dataCounts = dynamic(config["out_gnip_stats"]  +
-                                "daily/" + "{iChunk}.csv")
+                                "daily-0.05/" + "{iChunk}.csv")
 
 # gnipDaily: vader Sentiment analysis at the daily level on twitter data from GNIP
 rule gnipDaily:
@@ -81,9 +81,9 @@ rule gnipDaily:
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        outCounts = config["out_gnip_counts"] + "daily/" + "{iChunk}.csv",
-        outStats  = config["out_gnip_stats"]  + "daily/" + "{iChunk}.csv"
-    log: config["out_log"] + "daily/" + "{iChunk}_vaderDaily.txt"
+        outCounts = config["out_gnip_counts"] + "daily-0.05/" + "{iChunk}.csv",
+        outStats  = config["out_gnip_stats"]  + "daily-0.05/" + "{iChunk}.csv"
+    log: config["out_log"] + "daily-0.05/" + "{iChunk}_vaderDaily.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
