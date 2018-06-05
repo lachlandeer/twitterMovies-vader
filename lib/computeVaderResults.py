@@ -457,7 +457,7 @@ def parseMovieData(dataPath, outStats, outCounts,
     # Compute Sentiment and Classify
     df = returnCompoundScore(df, textCol)
     df = vaderClassify(df, vScore = 'vaderScore',
-                        outCol = 'vaderClassifier', thresholds=thresholds)
+                        outCol = 'vaderClassifier', thresholds = thresholds)
 
     #print('The value of movie List is: ', movieList)
 
