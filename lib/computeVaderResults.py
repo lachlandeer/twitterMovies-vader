@@ -6,6 +6,8 @@ Some header that has no meaningful information
 
 from pyspark.sql.functions import col, udf, avg, lit
 from pyspark.sql.functions import mean, stddev, min, max, count
+from pyspark.sql.functions import to_utc_timestamp, window, from_utc_timestamp
+from pyspark.sql.types import DateType
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from pyspark.ml.feature import Bucketizer
 import os
