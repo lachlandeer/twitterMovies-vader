@@ -340,7 +340,7 @@ def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
                     'wolverine')
     """
     # aggregate functions
-    aggStats    = [mean, stddev, min, max, count]
+    aggStats    = [count]
     aggVariable = [vaderCol]
     exprs       = [iStat(col(iVariable)) for iStat in aggStats \
                     for iVariable in aggVariable]
@@ -348,8 +348,7 @@ def vaderStats(dataset, identifier, vaderCol = 'vaderScore'):
     dailyStats = dataset.groupby('date').agg(*exprs)
     # rename cols
     autoNames  = dailyStats.schema.names
-    newNames   = ["date", "avgScore", "stdDev", "minScore",
-                    "maxScore", "totalTweets"]
+    newNames   = ["date", "totalTweets"]
     # rename all columns to be meaningful
     dailyStats = reduce(lambda dailyStats, idx: \
                     dailyStats.withColumnRenamed(autoNames[idx],
