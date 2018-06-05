@@ -120,8 +120,8 @@ def selectRelevantColumns(df, filePath):
         df2 = df2.withColumnRenamed("tag", "movieName")
 
     #df2 = df2.withColumnRenamed("value", "searchPattern")
-    df2 = df2.select('body', 'hour_window.start')
-    df2 = df2.withColumnRenamed('start', 'date', 'movieName')
+    df2 = df2.select('body', 'hour_window.start', 'movieName')
+    df2 = df2.withColumnRenamed('start', 'date')
     return df2
 
 def importTwitterData(filePath):
