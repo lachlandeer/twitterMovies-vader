@@ -100,9 +100,18 @@ def selectRelevantColumns(df, filePath):
     df2 = df2.filter(df2.twitter_lang == "en").na.drop()
 
     # Type cast
-    df2 = df2.withColumn('date', df2['postedTime'].cast('date'))
     df2 = df2.withColumn('tag', df2['tag'].cast('string'))
     df2 = df2.withColumn('value', df2['value'].cast('string'))
+
+    # Shift time to New York time Zone
+    df2 = df2.withColumn('date_utc', to_utc_timestamp('postedTime', 'CEST'))
+    df2 = df2.withColumn('date_eastcoast',
+                from_utc_timestamp('date_utc', 'America/New_York'))
+
+    # Get start date and rename column
+    df2 = df2.withColumn('hour_window', window("date_eastcoast", "1 hour"))
+    df2 = df2.select('body', 'hour_window.start')
+    df2 = df2.withColumnRenamed('start', 'date')
 
     # rename
     if "gnip" in filePath:
