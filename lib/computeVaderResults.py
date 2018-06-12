@@ -109,7 +109,7 @@ def selectRelevantColumns(df, filePath):
                 from_utc_timestamp('date_utc', 'America/New_York'))
 
     # Get start date/time from window
-    df2 = df2.withColumn('hour_window', window("date_eastcoast", "1 hour"))
+    df2 = df2.withColumn('minute_window', window("date_eastcoast", "1 minute"))
 
     # rename
     if "gnip" in filePath:
@@ -120,7 +120,7 @@ def selectRelevantColumns(df, filePath):
         df2 = df2.withColumnRenamed("tag", "movieName")
 
     #df2 = df2.withColumnRenamed("value", "searchPattern")
-    df2 = df2.select('body', 'hour_window.start', 'movieName')
+    df2 = df2.select('body', 'minute_window.start', 'movieName')
     df2 = df2.withColumnRenamed('start', 'date')
     return df2
 
