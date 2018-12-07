@@ -49,6 +49,8 @@ def loadTwitterData(filePath):
         # Try to access HiveConf, it will raise exception if Hive is not added
         SparkContext._jvm.org.apache.hadoop.hive.conf.HiveConf()
         spark = SparkSession.builder\
+                .appName("Vader Sentiment Analyer") \
+                .config("spark.sql.files.ignoreCorruptFiles", "true") \
             .getOrCreate()
     except py4j.protocol.Py4JError:
         spark = SparkSession.builder.getOrCreate()
@@ -66,7 +68,7 @@ def loadTwitterData(filePath):
     sqlContext = spark._wrapped
     sqlCtx = sqlContext
 
-    sqlCtx.setConf("spark.sql.files.ignoreCorruptFiles", "true")
+    #sqlCtx.setConf("spark.sql.files.ignoreCorruptFiles", "true")
 
     df = spark.read.format("com.databricks.spark.json")\
         .option("badRecordsPath", "/tmp/badRecordsPath")\
