@@ -15,7 +15,7 @@ CHICAGODATA = ['DeerAntMan', 'DeerSpectre'] # DeerAntMan works, Spectre has corr
 THRESHOLDS = "-1.00 -0.05 0.05 1.00"
 
 # --- Spark Submit Command --- #
-RUN_PYSPARK = "spark-submit --master spark://master001:7077"
+RUN_PYSPARK = "spark-submit --master spark://master001:7077 --conf spark.sql.files.ignoreCorruptFiles=true"
 
 # --- Build Rules --- #
 ## runDailyAnalysis:   compute all daily statistucs
@@ -56,7 +56,6 @@ rule chicagoDaily:
                          "daily.txt"
     shell:
         "{RUN_PYSPARK} \
-            --conf spark.sql.files.ignoreCorruptFiles=true \
             --py-files {input.library} \
             {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
