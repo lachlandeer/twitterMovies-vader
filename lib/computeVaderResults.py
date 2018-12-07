@@ -56,6 +56,9 @@ def loadTwitterData(filePath):
         spark = SparkSession.builder.getOrCreate()
 
     sc = spark.sparkContext
+
+    sc.conf.set("spark.sql.files.ignoreCorruptFiles", true)
+
     sql = spark.sql
     atexit.register(lambda: sc.stop())
 
