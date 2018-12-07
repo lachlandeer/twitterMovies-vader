@@ -68,7 +68,7 @@ def loadTwitterData(filePath):
 
     sqlCtx.setConf("spark.sql.files.ignoreCorruptFiles", "true")
 
-    df = spark.read.format("com.databricks.spark.json")
+    df = spark.read.format("com.databricks.spark.json")\
         .option("badRecordsPath", "/tmp/badRecordsPath")\
         .option("mode", "DROPMALFORMED")\
         .json(filePath + '*.gz')
