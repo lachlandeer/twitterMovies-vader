@@ -7,9 +7,9 @@ import glob, os
 configfile: "config.yaml"
 
 # --- Set up Dictionaries --- #
-CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
-               in open(config['src_data'] + 'twitterFolders.txt')]
-#CHICAGODATA = ['DeerAntMan']
+# CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
+#                in open(config['src_data'] + 'twitterFolders.txt')]
+CHICAGODATA = ['DeerAntMan', 'DeerSpectre'] # DeerAntMan works, Spectre has corrupt
 
 # --- Thresholds for VADER analysis --- #
 THRESHOLDS = "-1.00 -0.05 0.05 1.00"
@@ -21,10 +21,10 @@ RUN_PYSPARK = "spark-submit --master spark://master001:7077"
 ## runDailyAnalysis:   compute all daily statistucs
 rule runDailyAnalysis:
     input:
-        gnipStats  = dynamic(config["out_gnip_counts"] +
-                                "daily-0.05/" + "{iChunk}.csv"),
-        gnipCounts = dynamic(config["out_gnip_stats"]  +
-                                "daily-0.05/" + "{iChunk}.csv"),
+        # gnipStats  = dynamic(config["out_gnip_counts"] +
+        #                         "daily-0.05/" + "{iChunk}.csv"),
+        # gnipCounts = dynamic(config["out_gnip_stats"]  +
+        #                         "daily-0.05/" + "{iChunk}.csv"),
         chicagoStats = expand(config["out_chicago_counts"] +
                                 "daily-0.05/" + "{iFolder}.csv", \
                                 iFolder = CHICAGODATA),
