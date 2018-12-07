@@ -53,9 +53,15 @@ def loadTwitterData(filePath):
                 .config("spark.sql.files.ignoreCorruptFiles", "true") \
             .getOrCreate()
     except py4j.protocol.Py4JError:
-        spark = SparkSession.builder.getOrCreate()
+        spark = SparkSession.builder\
+                .appName("Vader Sentiment Analyer") \
+                .config("spark.sql.files.ignoreCorruptFiles", "true") \
+            .getOrCreate()
     except TypeError:
-        spark = SparkSession.builder.getOrCreate()
+        spark = SparkSession.builder\
+                .appName("Vader Sentiment Analyer") \
+                .config("spark.sql.files.ignoreCorruptFiles", "true") \
+            .getOrCreate()
 
     sc = spark.sparkContext
 
