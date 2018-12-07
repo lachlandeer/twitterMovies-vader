@@ -55,7 +55,8 @@ def loadTwitterData(filePath):
     except TypeError:
         spark = SparkSession.builder.getOrCreate()
 
-    spark.conf.set("spark.sql.files.ignoreCorruptFiles", "true")
+    spark.sqlContext.setConf("spark.sql.files.ignoreCorruptFiles", "true")
+
     sc = spark.sparkContext
 
     sql = spark.sql
