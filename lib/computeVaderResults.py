@@ -55,8 +55,6 @@ def loadTwitterData(filePath):
     except TypeError:
         spark = SparkSession.builder.getOrCreate()
 
-    sqlContext.setConf("spark.sql.files.ignoreCorruptFiles", "true")
-
     sc = spark.sparkContext
 
     sql = spark.sql
@@ -67,6 +65,8 @@ def loadTwitterData(filePath):
     # for compatibility
     sqlContext = spark._wrapped
     sqlCtx = sqlContext
+
+    sqlCtx.setConf("spark.sql.files.ignoreCorruptFiles", "true")
 
     df = spark.read.format("com.databricks.spark.json").json(filePath + '*.gz')
         #.option("badRecordsPath", "/tmp/badRecordsPath")\
