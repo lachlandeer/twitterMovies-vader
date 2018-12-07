@@ -68,6 +68,7 @@ def loadTwitterData(filePath):
     sqlContext = spark._wrapped
     sqlCtx = sqlContext
 
+    sc._conf.getAll()
     #sqlCtx.setConf("spark.sql.files.ignoreCorruptFiles", "true")
 
     df = spark.read.format("com.databricks.spark.json")\
