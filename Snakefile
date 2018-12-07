@@ -56,6 +56,7 @@ rule chicagoDaily:
                          "daily.txt"
     shell:
         "{RUN_PYSPARK} \
+            --conf spark.sql.files.ignoreCorruptFiles=true \
             --py-files {input.library} \
             {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
