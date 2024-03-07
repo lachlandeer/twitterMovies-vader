@@ -62,8 +62,8 @@ def loadTwitterData(filePath):
     #spark = SparkSession(sc)
     print(spark)
     # for compatibility
-    sqlContext = spark._wrapped
-    sqlCtx = sqlContext
+    #sqlContext = spark._wrapped
+    #sqlCtx = sqlContext
 
     df = spark.read.format("com.databricks.spark.json")\
         .option("badRecordsPath", "/tmp/badRecordsPath")\
@@ -365,7 +365,7 @@ def computeMovieStats(dataset, movieName):
         -moveiName: a to compute stats for
     Other Functions Called:
         - singleMovieTweets()
-        - vaderStats()
+        #- vaderStats()
         - vaderCountsByClassification()
     Outputs:
         - indivCounts: a spark DataFrame with each
@@ -376,11 +376,12 @@ def computeMovieStats(dataset, movieName):
     # get tweets for one movie
     indivTweets = singleMovieTweets(dataset, movieName)
     # tweets Stats per day
-    indivStats = vaderStats(indivTweets, movieName)
+    # we dont need the stats!
+    #indivStats = vaderStats(indivTweets, movieName)
     # tweet counts by type
     indivCounts = vaderCountsByClassification(indivTweets, movieName)
 
-    return indivCounts, indivStats
+    return indivCounts
 
 
 # --- CSV Writers --- #
@@ -436,7 +437,7 @@ def processGNIPFilters(dataPath, outPath):
 
 # --- Run VADER analysis ---#
 
-def parseMovieData(dataPath, outStats, outCounts,
+def parseMovieData(dataPath, outCounts,
                         movieList, textCol = 'body',
                         thresholds = [-1.0, -0.5, 0.5, 1.0]):
 
@@ -465,8 +466,8 @@ def parseMovieData(dataPath, outStats, outCounts,
         f.close()
 
     for iMovie in movies:
-        # recover counts and summary stats
-        vaderCounts, vaderStats = computeMovieStats(df, iMovie)
+        # recover counts
+        vaderCounts = computeMovieStats(df, iMovie)
 
         # add to data set or create them if they dont exist
         # first, vader counts
@@ -475,17 +476,17 @@ def parseMovieData(dataPath, outStats, outCounts,
         if 'allVaderCounts' in locals() or 'allVaderCounts' in globals():
             allVaderCounts = allVaderCounts.union(vaderCounts)
         # second, the summary stats
-        if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
-            allVaderStats = vaderStats
-        if 'allVaderStats' in locals() or 'allVaderStats' in globals():
-            allVaderStats = allVaderStats.union(vaderStats)
+        # if 'allVaderStats' not in locals() or 'allVaderStats' in globals():
+        #     allVaderStats = vaderStats
+        # if 'allVaderStats' in locals() or 'allVaderStats' in globals():
+        #     allVaderStats = allVaderStats.union(vaderStats)
 
     # saving via pandas merge
     # (slow, but writes to local directory which other methods dont)
-    print('Converting daily stats to Pandas DF, this may take a while...')
-    pandasVaderStats = allVaderStats.toPandas()
-    data2csv(pandasVaderStats, outStats)
-    del pandasVaderStats, vaderStats
+    # print('Converting daily stats to Pandas DF, this may take a while...')
+    # pandasVaderStats = allVaderStats.toPandas()
+    # data2csv(pandasVaderStats, outStats)
+    # del pandasVaderStats, vaderStats
 
     print ('Converting Count Data to Pandas DF, this may take a while...')
     pandasVaderCounts = allVaderCounts.toPandas()

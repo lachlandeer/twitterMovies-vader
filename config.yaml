@@ -2,7 +2,7 @@ ROOT:       "./"
 src:        "src/"
 lib:        "lib/"
 out:        "out/"
-data_mount: "home/lachlan/from_zurich/all-twitter-data/" #"alluxio://master001:19998/"
+data_mount: "/home/lachlan/from_zurich/all-twitter-data/" #"alluxio://master001:19998/"
 
 # SubDirectory Structure
 src_main:   "src/main/"

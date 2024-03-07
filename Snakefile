@@ -35,10 +35,10 @@ rule runDailyAnalysis:
 ## runChicagoDaily:     run sentiment analysis on Chicago data
 rule runChicagoDaily:
     input:
-        dataStats = expand(config["out_chicago_counts"] + "daily-0.05/" + "{iFolder}.csv", \
+        dataCounts = expand(config["out_chicago_counts"] + "daily-0.05/" + "{iFolder}.csv", \
                             iFolder = CHICAGODATA),
-        dataCounts = expand(config["out_chicago_stats"] + "daily-0.05/" + "{iFolder}.csv", \
-                            iFolder = CHICAGODATA)
+        # dataCounts = expand(config["out_chicago_stats"] + "daily-0.05/" + "{iFolder}.csv", \
+        #                     iFolder = CHICAGODATA)
 
 # chicagoDaily: vader Sentiment analysis at the daily level on twitter data from Chicago
 rule chicagoDaily:
@@ -51,7 +51,7 @@ rule chicagoDaily:
         dataPath   = config["data_mount"]
     output:
         outCounts = config["out_chicago_counts"] + "daily-0.05/" + "{iFolder}.csv",
-        outStats  = config["out_chicago_stats"]  + "daily-0.05/" + "{iFolder}.csv"
+       #outStats  = config["out_chicago_stats"]  + "daily-0.05/" + "{iFolder}.csv"
     log: config["out_log"] + "daily-0.05/" + str("{iFolder}") + "_" + \
                          "daily.txt"
     shell:
@@ -60,8 +60,7 @@ rule chicagoDaily:
             {input.script} --dataPath {params.dataPath} \
             --folder {params.folder} \
             --thresholds {params.thresholds} \
-            --outCounts {output.outCounts} \
-            --outStats {output.outStats} > {log}"
+            --outCounts {output.outCounts} > {log}"
 
 rule runGnipDaily:
     input:

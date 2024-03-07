@@ -41,12 +41,12 @@ CLI.add_argument(
   type    = str,  # any type/callable can be used here
   default = ['./'],
 )
-CLI.add_argument(
-  "--outStats",
-  nargs   = "*",
-  type    = str,  # any type/callable can be used here
-  default = ['./'],
-)
+# CLI.add_argument(
+#   "--outStats",
+#   nargs   = "*",
+#   type    = str,  # any type/callable can be used here
+#   default = ['./'],
+# )
 CLI.add_argument(
   "--movieList",  # name on the CLI - drop the `--` for positional/required parameters
   nargs   = "*",  # 0 or more values expected => creates a list
@@ -64,7 +64,7 @@ print("dataPath  : %r" % args.dataPath)
 print("folder    : %r" % args.folder)
 print("thresholds: %r" % args.thresholds)
 print("outCounts : %r" % args.outCounts)
-print("outStats  : %r" % args.outStats)
+# print("outStats  : %r" % args.outStats)
 print("movieList : %r" % args.movieList)
 print("-------------------------------------------")
 
@@ -72,7 +72,7 @@ dataPath        = args.dataPath[0]
 folderPath      = args.folder[0]
 fullPath        = dataPath + folderPath
 outCounts       = args.outCounts[0]
-outStats        = args.outStats[0]
+# outStats        = args.outStats[0]
 vaderThresholds = args.thresholds
 movieList       = args.movieList[0]
 
@@ -81,8 +81,12 @@ movieList       = args.movieList[0]
 # --- Run analysis --- #
 startTime = time.time()
 print('Starting Job')
+print("Full path is")
+print(fullPath)
 
-cvr.parseMovieData(fullPath, outStats, outCounts,
+print("outCounts is")
+print(outCounts)
+cvr.parseMovieData(fullPath, outCounts,
                     movieList = movieList, textCol = 'body',
                     thresholds = vaderThresholds)
 
