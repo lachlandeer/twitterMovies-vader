@@ -7,15 +7,15 @@ import glob, os
 configfile: "config.yaml"
 
 # --- Set up Dictionaries --- #
-CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
-               in open(config['src_data'] + 'twitterFolders.txt')]
-#CHICAGODATA = ['DeerAntMan']
+#CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
+#               in open(config['src_data'] + 'twitterFolders.txt')]
+CHICAGODATA = ['DeerAntMan']
 
 # --- Thresholds for VADER analysis --- #
 THRESHOLDS = "-1.00 -0.05 0.05 1.00"
 
 # --- Spark Submit Command --- #
-RUN_PYSPARK = "spark-submit --master spark://master001:7077"
+RUN_PYSPARK = "spark-submit --master spark://lachlan-tower:7077"
 
 # --- Build Rules --- #
 ## runDailyAnalysis:   compute all daily statistucs
@@ -95,29 +95,29 @@ rule gnipDaily:
             --movieList {input.movieList} > {log}"
 
 # runGnipMovieLists: process the gnip data and save lists of movies
-rule runGnipMovieLists:
-    input:
-        pickles = dynamic(config["out_list"] + "{iChunk}.pickle"),
+#rule runGnipMovieLists:
+#    input:
+#        pickles = dynamic(config["out_list"] + "{iChunk}.pickle"),
 
 # gnipMovieLists: recipe to create movie lists from GNIP data
-rule gnipMovieLists:
-    input:
-        script      = config["src_main"] + "driver_chunkGNIP.py",
-        library     = "tweetVader.zip",
-    params:
-        folder        = 'twitter-gnip/downloads/',
-        dataPath      = config["data_mount"],
-        outListFolder = config["out_list"]
-    output:
-        outLists  = dynamic(config["out_list"] + "{iChunk}.pickle"),
-    log: config["out_log"] + "gnip_lists.txt"
-    shell:
-        "{RUN_PYSPARK} \
-            --py-files {input.library} \
-            {input.script} --dataPath {params.dataPath} \
-            --folder {params.folder} \
-            --outListFolder {output.outLists} \
-            > {log}"
+#rule gnipMovieLists:
+#    input:
+#        script      = config["src_main"] + "driver_chunkGNIP.py",
+#        library     = "tweetVader.zip",
+#    params:
+#        folder        = 'twitter-gnip/downloads/',
+#        dataPath      = config["data_mount"],
+#        outListFolder = config["out_list"]
+#    output:
+#        outLists  = dynamic(config["out_list"] + "{iChunk}.pickle"),
+#    log: config["out_log"] + "gnip_lists.txt"
+#    shell:
+#        "{RUN_PYSPARK} \
+#            --py-files {input.library} \
+#            {input.script} --dataPath {params.dataPath} \
+#            --folder {params.folder} \
+#            --outListFolder {output.outLists} \
+#            > {log}"
 
 
 rule zipPyModules:
