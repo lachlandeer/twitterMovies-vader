@@ -7,8 +7,8 @@ import glob, os
 configfile: "config.yaml"
 
 # --- Set up Dictionaries --- #
-CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
-               in open(config['src_data'] + 'twitterFolders.txt')]
+# CHICAGODATA = [ iLine.rstrip('/ \n') for iLine
+#                in open(config['src_data'] + 'twitterFolders.txt')]
 #CHICAGODATA = ['DeerSpectre']
 
 # --- Thresholds for VADER analysis --- #
@@ -21,16 +21,16 @@ RUN_PYSPARK = "spark-submit --master spark://lachlan-tower:7077"
 ## runDailyAnalysis:   compute all daily statistucs
 rule runDailyAnalysis:
     input:
-        gnipStats  = dynamic(config["out_gnip_counts"] +
-                                "daily-0.05/" + "{iChunk}.csv"),
+        # gnipStats  = dynamic(config["out_gnip_counts"] +
+        #                         "daily-0.05/" + "{iChunk}.csv"),
         gnipCounts = dynamic(config["out_gnip_stats"]  +
-                                "daily-0.05/" + "{iChunk}.csv"),
-        chicagoStats = expand(config["out_chicago_counts"] +
-                                "daily-0.05/" + "{iFolder}.csv", \
-                                iFolder = CHICAGODATA),
-        chicagoCounts = expand(config["out_chicago_stats"] +
-                                "daily-0.05/" + "{iFolder}.csv", \
-                                iFolder = CHICAGODATA)
+                                "daily-0.05/" + "{iChunk}.csv")
+        # chicagoStats = expand(config["out_chicago_counts"] +
+        #                         "daily-0.05/" + "{iFolder}.csv", \
+        #                         iFolder = CHICAGODATA),
+        # chicagoCounts = expand(config["out_chicago_stats"] +
+        #                         "daily-0.05/" + "{iFolder}.csv", \
+        #                         iFolder = CHICAGODATA)
 
 ## runChicagoDaily:     run sentiment analysis on Chicago data
 rule runChicagoDaily:
@@ -64,8 +64,8 @@ rule chicagoDaily:
 
 rule runGnipDaily:
     input:
-        dataStats  = dynamic(config["out_gnip_counts"] +
-                                "daily-0.05/" + "{iChunk}.csv"),
+        # dataStats  = dynamic(config["out_gnip_counts"] +
+        #                         "daily-0.05/" + "{iChunk}.csv"),
         dataCounts = dynamic(config["out_gnip_stats"]  +
                                 "daily-0.05/" + "{iChunk}.csv")
 
@@ -81,7 +81,7 @@ rule gnipDaily:
         dataPath   = config["data_mount"]
     output:
         outCounts = config["out_gnip_counts"] + "daily-0.05/" + "{iChunk}.csv",
-        outStats  = config["out_gnip_stats"]  + "daily-0.05/" + "{iChunk}.csv"
+        #outStats  = config["out_gnip_stats"]  + "daily-0.05/" + "{iChunk}.csv"
     log: config["out_log"] + "daily-0.05/" + "{iChunk}_vaderDaily.txt"
     shell:
         "{RUN_PYSPARK} \
@@ -90,7 +90,6 @@ rule gnipDaily:
             --folder {params.folder} \
             --thresholds {params.thresholds} \
             --outCounts {output.outCounts} \
-            --outStats {output.outStats} \
             --movieList {input.movieList} > {log}"
 
 # runGnipMovieLists: process the gnip data and save lists of movies
@@ -121,7 +120,7 @@ rule gnipDaily:
 
 rule zipPyModules:
     input:
-        library = config["lib"]
+        library = config["lib"] + "computeVaderResults.py"
     output:
         zipDir = "tweetVader.zip"
     shell:
