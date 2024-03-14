@@ -1,5 +1,8 @@
 """
-Here is some basic text
+Constructs a set of lists that contain movies.
+
+These lists are then used to construct VADER output in 
+  another part of the workflow
 """
 # --- Import Libraries --- #
 ## Native Python
@@ -56,6 +59,13 @@ outListFolder   = args.outListFolder[0]
 # --- Run analysis --- #
 startTime = time.time()
 print('Starting Job')
+
+if not os.path.exists(outListFolder):
+  # Create a new directory because it does not exist
+  os.makedirs(outListFolder)
+  print("The directory", outListFolder, "is created!")
+else:
+  print("The directory", outListFolder, "already exists")
 
 cvr.processGNIPFilters(fullPath, outListFolder)
 

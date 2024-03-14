@@ -405,7 +405,8 @@ def chunks(longList, chunkSize):
 
 def movieListSave(movieList, outPath, outFile):
 
-    with open(outPath + outFile, 'w') as fileName:
+    with open(outPath +  "/" + outFile, 'wb') as fileName:
+        print("pickle dump to ", fileName)
         pickle.dump(movieList, fileName)
 
 def identifyMovies(filePath):
@@ -429,6 +430,7 @@ def getMovieChunks(moviesUnique, outPath):
 
     for idx, iChunk in enumerate(chunkedList):
         outFile = 'gnipChunk_' + str(idx) + '.pickle'
+        print("I am writing to", outPath, outFile)
         movieListSave(iChunk, outPath, outFile)
 
 
