@@ -4,7 +4,7 @@ Some header that has no meaningful information
 
 # --- Import Functions from other Libraries ---#
 
-from pyspark.sql.functions import col, udf, avg, lit
+from pyspark.sql.functions import col, udf, avg, lit, to_date
 from pyspark.sql.functions import mean, stddev, min, max, count
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from pyspark.ml.feature import Bucketizer
@@ -61,13 +61,30 @@ def loadTwitterData(filePath):
 
     #spark = SparkSession(sc)
     print(spark)
+    #spark.sqlContext.setConf("spark.sql.files.ignoreCorruptFiles", "true")
+
     # for compatibility
     #sqlContext = spark._wrapped
     #sqlCtx = sqlContext
-    df = spark.read.option("mode", "DROPMALFORMED")\
-        .json(filePath + '*.gz', 
-              multiLine = True
-              )
+    if "gnip" in filePath:
+        print('working on GNIP Data...')
+        df = spark.read\
+            .option("badRecordsPath", "/tmp/badRecordsPath")\
+            .json(filePath + '*.gz', 
+                #multiLine = True,
+                encoding = "utf-8"
+                )
+
+    elif "chicago" in filePath:
+        print('working on Chicago Data...')
+        #df = spark.read.format("com.databricks.spark.json")\
+            #.option("mode", "DROPMALFORMED")\
+        df = spark.read\
+            .option("badRecordsPath", "/tmp/badRecordsPath")\
+            .json(filePath + '*.gz', 
+                #multiLine = True,
+                encoding = "utf-8"
+                )
     #df = spark.read.format("com.databricks.spark.json")\
     #    .option("badRecordsPath", "/tmp/badRecordsPath")\
     #    .option("mode", "DROPMALFORMED").json(filePath + '*.gz')
@@ -91,29 +108,54 @@ def selectRelevantColumns(df, filePath):
         my_data     = loadTwitterData(filePath)
         small_data  = selectRelevantColumns(my_data)
     """
-    columnNames = ['body','gnip.matching_rules.tag', \
-                    'gnip.matching_rules.value', \
-                    'postedTime', 'retweetCount', \
-                    'twitter_lang']
+    # columnNames = ['body','gnip.matching_rules.tag', \
+    #                 'gnip.matching_rules.value', \
+    #                 'postedTime', 'retweetCount', \
+    #                 'twitter_lang']
 
-    # Select relevant columns & filter out english language tweets
-    df2 = df.select(*columnNames)
-    df2 = df2.filter(df2.twitter_lang == "en").na.drop()
+    # # Select relevant columns & filter out english language tweets
+    # df2 = df.select(*columnNames)
+    # df2 = df2.filter(df2.twitter_lang == "en").na.drop()
 
     # Type cast
-    df2 = df2.withColumn('date', df2['postedTime'].cast('date'))
-    df2 = df2.withColumn('tag', df2['tag'].cast('string'))
-    df2 = df2.withColumn('value', df2['value'].cast('string'))
+    # df2 = df2.withColumn('date', df2['postedTime'].cast('date'))
+    # df2 = df2.withColumn('tag', df2['tag'].cast('string'))
+    # df2 = df2.withColumn('value', df2['value'].cast('string'))
 
     # rename
     if "gnip" in filePath:
         print('working on GNIP Data...')
-        df2 = df2.withColumnRenamed("value", "movieName")
+
+        columnNames = ['id', 'body', \
+                    'gnip.matching_rules.value', \
+                    'postedTime', 'retweetCount', \
+                    'verb', 'twitter_lang']
+
+        df2 = df.select(*columnNames)\
+                .filter(df.twitter_lang == "en")\
+                .na.drop()
+
+        df2 = df2.withColumn('date', df2['postedTime'].cast('date'))\
+                 .withColumn('value', df2['value'].cast('string'))\
+                 .withColumnRenamed("value", "movieName")
+    
     elif "chicago" in filePath:
         print('working on Chicago Data...')
-        df2 = df2.withColumnRenamed("tag", "movieName")
 
-    df2 = df2.withColumnRenamed("value", "searchPattern")
+        columnNames = ['id', 'body', \
+                    'gnip.matching_rules.tag', \
+                    'postedTime', 'retweetCount', \
+                    'verb', 'twitter_lang']
+        
+        df2 = df.select(*columnNames)\
+                .filter(df.twitter_lang == "en")\
+                .na.drop()
+
+        df2 = df2.withColumn('date', df2['postedTime'].cast('date'))\
+                 .withColumn('tag', df2['tag'].cast('string'))\
+                 .withColumnRenamed("tag", "movieName")
+
+    #df2 = df2.withColumnRenamed("value", "searchPattern")
     return df2
 
 def importTwitterData(filePath):
@@ -393,6 +435,13 @@ def data2csv(dataset, outPath):
     dataset.to_csv(outPath, index=False, encoding='utf-8')
     print('saved to ', outPath)
 
+def data2parquet(dataset, outPath):
+    # partition by date
+    dataset = dataset.withColumn('date', to_date(col('postedTime')))
+    print('saving to ', outPath)
+    dataset.write.partitionBy('date').parquet(outPath)
+
+
 # --- GNIP specific functions --- #
 
 ## Chunking Up List of Unique Movies
@@ -441,6 +490,26 @@ def processGNIPFilters(dataPath, outPath):
 
 
 # --- Run VADER analysis ---#
+
+def computeVader(dataPath, 
+                 outVader,
+                 textCol = 'body',
+                 thresholds = [-1.0, -0.5, 0.5, 1.0]):
+    # Load Data
+    print('Loading the data from ', dataPath)
+    df = importTwitterData(dataPath)
+
+    # Compute Sentiment and Classify
+    print('Computing Vader Compound Scores')
+    df = returnCompoundScore(df, textCol)
+    print('Classifying based on thresholds:')
+    df = vaderClassify(df, vScore = 'vaderScore',
+                        outCol = 'vaderClassifier', thresholds=thresholds)
+
+    #print ('Converting Result to Pandas DF, this may take a while...')
+    #pandas_df = df.toPandas()
+    #data2csv(pandas_df, outVader)
+    data2parquet(df, outVader)
 
 def parseMovieData(dataPath, outCounts,
                         movieList, textCol = 'body',
