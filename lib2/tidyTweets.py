@@ -7,7 +7,7 @@ Some header that has no meaningful information
 from pyspark.sql.functions import col, udf, avg, lit, to_date
 from pyspark.sql.functions import mean, stddev, min, max, count
 from pyspark.sql.functions import input_file_name
-from pyspark.sql.functions import regexp_extract
+from pyspark.sql.functions import regexp_extract, regexp_replace
 from pyspark.sql.functions import when
 from pyspark.sql.functions import from_utc_timestamp, to_date
 
