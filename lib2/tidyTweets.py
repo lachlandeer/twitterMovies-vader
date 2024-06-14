@@ -64,6 +64,15 @@ def loadTwitterData(filePath):
 
     print(spark)
 
+    # Here's all the dirs to load from
+    data_dirs = [ iLine.rstrip('/ \n') for iLine
+               in open('src/in_data/twitterFolders.txt')]
+    print(data_dirs)
+
+    type(data_dirs)
+
+    STOP
+
     df = spark.read.option("basePath", filePath)\
          .parquet(filePath)\
          .withColumn("file_name", 
