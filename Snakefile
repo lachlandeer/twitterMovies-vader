@@ -18,6 +18,30 @@ THRESHOLDS = "-1.00 -0.05 0.05 1.00"
 RUN_PYSPARK = "spark-submit --master spark://lachlan-tower:7077"
 
 
+# --- Tidy Vader Output --- #
+rule tidyVaderTweets:
+    input: 
+        script = "src/main/driver_tidy_tweets.py",
+        library = "tidyTweets.zip",
+        # not specifying data as inpouts to separate the 
+        # DAG while we play around
+        #data_chicago =
+        #data_gnip = 
+    params:
+        dataPath = "out/data/vader/"
+    output:
+        data = directory("out/data/tidyVader/"),
+    log: 
+        config["out_log"] + "tidyVader/tidyVader.txt"
+    shell:
+        "{RUN_PYSPARK} \
+            --py-files {input.library} \
+            {input.script} --dataPath {params.dataPath} \
+            --outPath {output.data} \
+            > {log}"    
+
+
+# --- Vader Classifiers ---- #
 rule runChicagoVader:
     input:
         data = expand(config["out_chicago_vader"] + "{iFolder}", \
@@ -65,6 +89,14 @@ rule gnipVader:
             --thresholds {params.thresholds} \
             --outVader {output.data} \
             > {log}"
+
+rule zipTidyModule:
+    input:
+        library = "lib2/tidyTweets.py"
+    output:
+        zipDir = "tidyTweets.zip"
+    shell:
+        "zip -jr  {output.zipDir} {input.library}"
 
 rule zipPyModules:
     input:
