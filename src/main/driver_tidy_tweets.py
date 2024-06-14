@@ -8,7 +8,7 @@ import csv
 import argparse
 
 ## User written
-import tidyTweetsDaily as ttd
+import tidyTweets as tt
 
 # ---  Define command line options --- #
 # this also generates --help and error handling
@@ -46,7 +46,7 @@ print('Starting Job')
 print("Full path is")
 print(fullPath)
 
-ttd.runTidyTweets(dataPath, outPath)
+tt.runTidyTweets(dataPath, outPath)
 
 print('Job Completed!')
 totalTime = time.time() - startTime
