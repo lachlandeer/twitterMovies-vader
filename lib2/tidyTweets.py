@@ -65,8 +65,7 @@ def loadTwitterData(filePath):
     print(spark)
 
     df = spark.read.option("basePath", filePath)\
-         .format("parquet")\
-         .load(filePath)\
+         .parquet(filePath)\
          .withColumn("file_name", 
                      input_file_name()
                     )
@@ -93,9 +92,11 @@ def fixMovieName(df):
     df = df.withColumn("movieName", \
               when(df["movieName"] == '[movie]', 
                    df["movieName_alt"])\
-                   .otherwise(res["movieName"])
+                   .otherwise(df["movieName"])
                    )
     
+    print(df.columns)
+
     return df
 
 def returnTweetID(df):
@@ -109,6 +110,8 @@ def returnTweetID(df):
                                   '(\d+):(\d+)', 2)
                     )
     
+    print(df.columns)
+
     return df
 
 def timeShiftEastCoast(df):
@@ -118,8 +121,8 @@ def timeShiftEastCoast(df):
     This is the date we want to aggregate on
     """
     # give a datetime
-    df = df.select('postedTime').\
-        withColumn('postedTime_EST', 
+    df = df\
+        .withColumn('postedTime_EST', 
                     from_utc_timestamp(df['postedTime'], "EST")
                     )
     # and a date
@@ -127,6 +130,8 @@ def timeShiftEastCoast(df):
             to_date(df['postedTime_EST'])
             )
     
+    print(df.columns)
+
     return df
 
 def selectExportCols(df):
@@ -134,16 +139,16 @@ def selectExportCols(df):
     Columns we need to export for further analysis
     """
 
-    df2 = df.select(
-        'tweet_id',
-        'postedDate',
-        'postedTime_EST',
-        'movieName',
-        'vaderScore',
-        'vaderClassifier'
-    )
+    columnNames = ["tweet_id",
+        "postedDate",
+        "postedTime_EST",
+        "movieName",
+        "vaderScore",
+        "vaderClassifier"]
 
-    return df
+    df2 = df.select(*columnNames)
+
+    return df2
 
 def data2parquet(dataset, outPath):
     # partition by movie, date
@@ -160,7 +165,7 @@ def tidyTweets(df):
     df = fixMovieName(df)
     df = returnTweetID(df)
     df = timeShiftEastCoast(df)
-    df = selectExportCols(df)
+    #df = selectExportCols(df)
 
     return df
 
