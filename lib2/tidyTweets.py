@@ -65,22 +65,22 @@ def loadTwitterData(filePath):
     print(spark)
 
     # Here's all the dirs to load from
-    # data_dirs = [ iLine.rstrip('/ \n') for iLine
-    #            in open('src/in_data/twitterFolders.txt')]
-    # print(data_dirs)
+    data_dirs = [ iLine.rstrip('/ \n') for iLine
+               in open('src/in_data/twitterFolders.txt')]
+    print(data_dirs)
 
-    # data_dirs_full = [filePath + "chicago/" + iDir + "/*" for iDir in data_dirs]
+    data_dirs_full = [filePath + "chicago/" + iDir + "/*" for iDir in data_dirs]
     # data_dirs_full.append("out/data/vader/gnip/")
 
-    # df = spark.read.option("basePath", filePath)\
-    #      .parquet(*data_dirs_full)\
-    #      .withColumn("file_name", 
-    #                  input_file_name()
-    #                 )
-    df = spark.read.option("recursiveFileLookup", True).parquet(filePath)\
-        .withColumn("file_name", 
+    df = spark.read.option("basePath", filePath)\
+         .parquet(*data_dirs_full)\
+         .withColumn("file_name", 
                      input_file_name()
                     )
+    # df = spark.read.option("recursiveFileLookup", True).parquet(filePath)\
+    #     .withColumn("file_name", 
+    #                  input_file_name()
+    #                 )
 
     return df
 
