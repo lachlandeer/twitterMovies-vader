@@ -87,15 +87,16 @@ def fixMovieName(df):
           .withColumn('movieName_alt', 
                      regexp_extract(col('file_name'), 
                                     '.Deer(\w+)', 1)
-                    )\            
-            .withColumn('movieName_alt',
-                        regex_replace(col('movieName_alt'),
-                            "\\[", "")
-                        )\
-            .withColumn('movieName_alt',
-                        regex_replace(col('movieName_alt'),
-                            "\\]", "")
-                        )
+                    )
+    # df =df\
+    #     .withColumn('movieName_alt',
+    #                     regexp_replace(col('movieName_alt'),
+    #                         "\\[", "")
+    #                     )\
+    #     .withColumn('movieName_alt',
+    #                     regexp_replace(col('movieName_alt'),
+    #                         "\\]", "")
+    #                     )
     
     df = df.withColumn("movieName", \
               when(df["movieName"] == '[movie]', 
@@ -173,7 +174,11 @@ def tidyTweets(df):
     df = fixMovieName(df)
     df = returnTweetID(df)
     df = timeShiftEastCoast(df)
-    #df = selectExportCols(df)
+    df = selectExportCols(df)
+
+    #df.show(5)
+
+    #print(df.dtypes)
 
     return df
 
