@@ -64,7 +64,7 @@ def loadTwitterData(filePath):
 
     print(spark)
 
-    df = spark.read.option("basePath", folderPath)\
+    df = spark.read.option("basePath", filePath)\
          .format("parquet")\
          .load(filePath)\
          .withColumn("file_name", 
