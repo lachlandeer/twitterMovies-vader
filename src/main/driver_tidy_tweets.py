@@ -43,8 +43,8 @@ outPath         = args.outPath[0]
 # --- Run analysis --- #
 startTime = time.time()
 print('Starting Job')
-print("Full path is")
-print(fullPath)
+print("Data comes from")
+print(dataPath)
 
 tt.runTidyTweets(dataPath, outPath)
 
