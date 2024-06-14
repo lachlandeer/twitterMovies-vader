@@ -10,6 +10,8 @@ from pyspark.sql.functions import input_file_name
 from pyspark.sql.functions import regexp_extract, regexp_replace
 from pyspark.sql.functions import when
 from pyspark.sql.functions import from_utc_timestamp, to_date
+from functools import reduce
+from pyspark.sql import DataFrame
 
 import os
 import math
@@ -70,19 +72,29 @@ def loadTwitterData(filePath):
     print(data_dirs)
 
     data_dirs_full = [filePath + "chicago/" + iDir + "/*" for iDir in data_dirs]
-    # data_dirs_full.append("out/data/vader/gnip/")
+    data_dirs_full.append("out/data/vader/gnip/")
 
-    df = spark.read.option("basePath", filePath)\
-         .parquet(*data_dirs_full)\
-         .withColumn("file_name", 
+    allDataFrames = []
+
+    for iData in data_dirs_full:
+        print("reading from:")
+        print(iData)
+
+        df = spark.read.option("basePath", filePath)\
+            .parquet(*iData)\
+            .withColumn("file_name", 
                      input_file_name()
-                    )
+                        )
+
+        allDataFrames.append(df)
+
+    df_all = reduce(DataFrame.unionAll, allDataFrames)
     # df = spark.read.option("recursiveFileLookup", True).parquet(filePath)\
     #     .withColumn("file_name", 
     #                  input_file_name()
     #                 )
 
-    return df
+    return df_all
 
 def fixMovieName(df):
     """
