@@ -153,9 +153,9 @@ def data2parquet(dataset, outPath):
 # 
 
 def tidyTweets(df):
-"""
-call the tidying functions
-"""
+    """
+    call the tidying functions
+    """
     df = fixMovieName(df)
     df = returnTweetID(df)
     df = timeShiftEastCoast(df)
@@ -164,9 +164,9 @@ call the tidying functions
     return df
 
 def runTidyTweets(dataPath, outPath):
-"""
-Run the analysis
-"""
+    """
+    Run the analysis
+    """
     # Load Data
     print('Loading the data from ', dataPath)
     df = loadTwitterData(dataPath)
