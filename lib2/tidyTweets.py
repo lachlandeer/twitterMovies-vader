@@ -91,7 +91,7 @@ def fixMovieName(df):
             .withColumn('movieName_alt',
                         regex_replace(col('movieName_alt'),
                             "\\[", "")
-                        )
+                        )\
             .withColumn('movieName_alt',
                         regex_replace(col('movieName_alt'),
                             "\\]", "")
