@@ -69,12 +69,11 @@ def loadTwitterData(filePath):
                in open('src/in_data/twitterFolders.txt')]
     print(data_dirs)
 
-    type(data_dirs)
-
-    STOP
+    data_dirs_full = [filePath + "chicago/" + iDir + "/*" for iDir in data_dirs]
+    data_dirs_full.append("out/data/vader/gnip/")
 
     df = spark.read.option("basePath", filePath)\
-         .parquet(filePath)\
+         .parquet(*data_dirs_full)\
          .withColumn("file_name", 
                      input_file_name()
                     )

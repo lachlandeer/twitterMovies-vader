@@ -28,11 +28,11 @@ rule tidyVaderTweets:
         #data_chicago =
         #data_gnip = 
     params:
-        dataPath = "out/data/vader/chicago/DeerAntMan/"
+        dataPath = "out/data/vader/"
     output:
-        data = directory("out/data/tidyVader/chicago/"),
+        data = directory("out/data/tidyVader/"),
     log: 
-        config["out_log"] + "tidyVader/tidyVader_chicago.txt"
+        config["out_log"] + "tidyVader/tidyVader.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
