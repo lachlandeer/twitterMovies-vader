@@ -19,20 +19,20 @@ RUN_PYSPARK = "spark-submit --master spark://lachlan-tower:7077"
 
 
 # --- Tidy Vader Output --- #
-rule tidyVaderTweets:
+rule tidyVaderTweets_chicago:
     input: 
         script = "src/main/driver_tidy_tweets.py",
-        library = "tidyTweets.zip",
+        library = "tidyTweets.zip"
         # not specifying data as inpouts to separate the 
         # DAG while we play around
         #data_chicago =
         #data_gnip = 
     params:
-        dataPath = "out/data/vader/"
+        dataPath = config["out_data"] + "out/data/vader/"
     output:
-        data = directory("out/data/tidyVader/"),
+        data = directory(config["out_data"] + "out/data/tidyVader/chicago")
     log: 
-        config["out_log"] + "tidyVader/tidyVader.txt"
+        config["out_log"] + "tidyVader/tidyVader_chicago.txt"
     shell:
         "{RUN_PYSPARK} \
             --py-files {input.library} \
@@ -44,7 +44,7 @@ rule tidyVaderTweets:
 # --- Vader Classifiers ---- #
 rule runChicagoVader:
     input:
-        data = expand(config["out_chicago_vader"] + "{iFolder}", \
+        data = expand(config["out_data"] + config["out_chicago_vader"] + "{iFolder}", \
                             iFolder = CHICAGODATA),
 
 rule chicagoVader:
@@ -56,7 +56,7 @@ rule chicagoVader:
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        data = directory(config["out_chicago_vader"] + "{iFolder}"),
+        data = directory(config["out_data"] + config["out_chicago_vader"] + "{iFolder}"),
     log: 
         config["out_log"] + "chicago/" + "{iFolder}" + ".txt"
     shell:
@@ -78,7 +78,7 @@ rule gnipVader:
         thresholds = THRESHOLDS,
         dataPath   = config["data_mount"]
     output:
-        data = directory(config["out_gnip_vader"]),
+        data = directory(config["out_data"] + config["out_gnip_vader"]),
     log: 
         config["out_log"] + "gnip/gnip_vader.txt"
     shell:
@@ -105,6 +105,12 @@ rule zipPyModules:
         zipDir = "tweetVader.zip"
     shell:
         "zip -jr  {output.zipDir} {input.library}"
+
+# # --- Symbolic Link for data output --- #
+# rule link_out_data:
+#     shell:
+#     "ln -s /media/lachlan/Elements/twitterMovies-vader ./out/data"
+
 
 # --- Restart Rules ---#
 rule restart_spark:

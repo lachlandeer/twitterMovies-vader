@@ -4,6 +4,11 @@ Some header that has no meaningful information
 
 # --- Import Functions from other Libraries ---#
 
+import os
+import math
+import json
+import pickle
+
 from pyspark.sql.functions import col, udf, avg, lit, to_date
 from pyspark.sql.functions import mean, stddev, min, max, count
 from pyspark.sql.functions import input_file_name
@@ -12,11 +17,6 @@ from pyspark.sql.functions import when
 from pyspark.sql.functions import from_utc_timestamp, to_date
 from functools import reduce
 from pyspark.sql import DataFrame
-
-import os
-import math
-import json
-import pickle
 
 # --- Functions to Import Data --- #
 
@@ -53,6 +53,45 @@ def loadTwitterData(filePath):
     try:
         # Try to access HiveConf, it will raise exception if Hive is not added
         SparkContext._jvm.org.apache.hadoop.hive.conf.HiveConf()
+        
+        # Configure SparkSession before creating it
+        spark = SparkSession.builder\
+            .config("spark.executor.heartbeatInterval", "120s")\
+            .config("spark.network.timeout", "600s")\
+            .config("spark.dynamicAllocation.enabled", "true")\
+            .config("spark.dynamicAllocation.minExecutors", "2")\
+            .config("spark.dynamicAllocation.maxExecutors", "10")\
+            .getOrCreate()
+    except py4j.protocol.Py4JError:
+        # Configure SparkSession without Hive
+        spark = SparkSession.builder\
+            .config("spark.executor.heartbeatInterval", "120s")\
+            .config("spark.network.timeout", "600s")\
+            .config("spark.dynamicAllocation.enabled", "true")\
+            .config("spark.dynamicAllocation.minExecutors", "2")\
+            .config("spark.dynamicAllocation.maxExecutors", "10")\
+            .getOrCreate()
+    except TypeError:
+        spark = SparkSession.builder\
+            .config("spark.executor.heartbeatInterval", "120s")\
+            .config("spark.network.timeout", "600s")\
+            .config("spark.dynamicAllocation.enabled", "true")\
+            .config("spark.dynamicAllocation.minExecutors", "2")\
+            .config("spark.dynamicAllocation.maxExecutors", "10")\
+            .getOrCreate()
+
+    sc = spark.sparkContext
+    sql = spark.sql
+    atexit.register(lambda: sc.stop())
+
+    if os.environ.get("SPARK_EXECUTOR_URI"):
+        SparkContext.setSystemProperty("spark.executor.uri", os.environ["SPARK_EXECUTOR_URI"])
+
+    SparkContext._ensure_initialized()
+
+    try:
+        # Try to access HiveConf, it will raise exception if Hive is not added
+        SparkContext._jvm.org.apache.hadoop.hive.conf.HiveConf()
         spark = SparkSession.builder\
             .getOrCreate()
     except py4j.protocol.Py4JError:
@@ -65,6 +104,12 @@ def loadTwitterData(filePath):
     atexit.register(lambda: sc.stop())
 
     print(spark)
+    
+    # spark.conf.set("spark.executor.heartbeatInterval", "60s")  # Default is 10s
+    # spark.conf.set("spark.network.timeout", "300s")
+    # spark.conf.set("spark.dynamicAllocation.enabled", "true")
+    # spark.conf.set("spark.dynamicAllocation.minExecutors", "2")
+    # spark.conf.set("spark.dynamicAllocation.maxExecutors", "10")  # Extend network timeout (default is 120s)
 
     # Here's all the dirs to load from
     data_dirs = [ iLine.rstrip('/ \n') for iLine
@@ -72,7 +117,7 @@ def loadTwitterData(filePath):
     print(data_dirs)
 
     data_dirs_full = [filePath + "chicago/" + iDir + "/*" for iDir in data_dirs]
-    data_dirs_full.append("out/data/vader/gnip/")
+    #data_dirs_full.append(filePath + "gnip/")
 
     allDataFrames = []
 
@@ -110,7 +155,7 @@ def fixMovieName(df):
     df = df\
           .withColumn('movieName_alt', 
                      regexp_extract(col('file_name'), 
-                                    '.Deer(\w+)', 1)
+                                    '.Deer(\\w+)', 1)
                     )
     # df =df\
     #     .withColumn('movieName_alt',
@@ -122,11 +167,16 @@ def fixMovieName(df):
     #                         "\\]", "")
     #                     )
     
-    df = df.withColumn("movieName", \
-              when(df["movieName"] == '[movie]', 
-                   df["movieName_alt"])\
+    # df = df.withColumn("movieName", \
+    #           when(df["movieName"] == '[movie]', 
+    #                df["movieName_alt"])\
+    #                .otherwise(df["movieName"])
+    #                )
+    df = df.withColumn("movieName", 
+                   when((df["movieName"] == '[movie]') & (df["movieName_alt"].isNotNull()) & (df["movieName_alt"] != ''),
+                        df["movieName_alt"]) \
                    .otherwise(df["movieName"])
-                   )
+                  )
     
     print(df.columns)
 
@@ -140,7 +190,7 @@ def returnTweetID(df):
     df = df\
         .withColumn('tweet_id', 
                     regexp_extract(col('id'), 
-                                  '(\d+):(\d+)', 2)
+                                  '(\\d+):(\\d+)', 2)
                     )
     
     print(df.columns)
@@ -187,7 +237,9 @@ def data2parquet(dataset, outPath):
     # partition by movie, date
     #dataset = dataset.withColumn('date', to_date(col('postedTime')))
     print('saving to ', outPath)
-    dataset.write.partitionBy('movieName', 'postedDate').parquet(outPath)
+    dataset = dataset.filter(dataset['movieName'].isNotNull() & dataset['postedDate'].isNotNull())
+    dataset.write.parquet(outPath)
+    #dataset.write.partitionBy('movieName', 'postedDate').parquet(outPath)
 
 # 
 
