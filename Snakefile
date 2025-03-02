@@ -19,9 +19,30 @@ RUN_PYSPARK = "spark-submit --master spark://lachlan-tower:7077"
 
 
 # --- Tidy Vader Output --- #
+rule tidyVaderTweets_gnip:
+    input: 
+        script = "src/main/driver_tidy_tweets_gnip.py",
+        library = "tidyTweets.zip"
+        # not specifying data as inpouts to separate the 
+        # DAG while we play around
+        #data_chicago =
+        #data_gnip = 
+    params:
+        dataPath = config["out_data"] + "out/data/vader/"
+    output:
+        data = directory(config["out_data"] + "out/data/tidyVader/gnip")
+    log: 
+        config["out_log"] + "tidyVader/tidyVader_gnip.txt"
+    shell:
+        "{RUN_PYSPARK} \
+            --py-files {input.library} \
+            {input.script} --dataPath {params.dataPath} \
+            --outPath {output.data} \
+            > {log}"  
+
 rule tidyVaderTweets_chicago:
     input: 
-        script = "src/main/driver_tidy_tweets.py",
+        script = "src/main/driver_tidy_tweets_chicago.py",
         library = "tidyTweets.zip"
         # not specifying data as inpouts to separate the 
         # DAG while we play around

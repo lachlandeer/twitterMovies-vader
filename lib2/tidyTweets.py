@@ -20,7 +20,7 @@ from pyspark.sql import DataFrame
 
 # --- Functions to Import Data --- #
 
-def loadTwitterData(filePath):
+def loadTwitterData(filePath, outPath):
     """
     Loads all Twitter data .json files into Spark from a directory
 
@@ -111,13 +111,18 @@ def loadTwitterData(filePath):
     # spark.conf.set("spark.dynamicAllocation.minExecutors", "2")
     # spark.conf.set("spark.dynamicAllocation.maxExecutors", "10")  # Extend network timeout (default is 120s)
 
-    # Here's all the dirs to load from
-    data_dirs = [ iLine.rstrip('/ \n') for iLine
-               in open('src/in_data/twitterFolders.txt')]
-    print(data_dirs)
+    if "chicago" in outPath: 
+        print("Proceeding with Chicago data")
+        # Here's all the dirs to load from
+        data_dirs = [ iLine.rstrip('/ \n') for iLine
+                in open('src/in_data/twitterFolders.txt')]
+        print(data_dirs)
 
-    data_dirs_full = [filePath + "chicago/" + iDir + "/*" for iDir in data_dirs]
-    #data_dirs_full.append(filePath + "gnip/")
+        data_dirs_full = [filePath + "chicago/" + iDir + "/*" for iDir in data_dirs]
+    
+    if "gnip" in outPath:
+        print("Proceeding with GNIP data")
+        data_dirs_full = [filePath + "gnip/"]
 
     allDataFrames = []
 
@@ -264,7 +269,7 @@ def runTidyTweets(dataPath, outPath):
     """
     # Load Data
     print('Loading the data from ', dataPath)
-    df = loadTwitterData(dataPath)
+    df = loadTwitterData(dataPath, outPath)
 
     # Run analysis
     df = tidyTweets(df)
